@@ -1,0 +1,939 @@
+\documentclass[12pt]{article} 
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\geometry{letterpaper}
+\usepackage{graphicx} 
+\usepackage{parskip}
+\usepackage{booktabs}
+\usepackage{array} 
+\usepackage{paralist} 
+\usepackage{verbatim}
+\usepackage{subfig}
+\usepackage{fancyhdr}
+\usepackage{sectsty}
+
+\pagestyle{fancy}
+\renewcommand{\headrulewidth}{0pt} 
+\lhead{}\chead{}\rhead{}
+\lfoot{}\cfoot{\thepage}\rfoot{}
+
+
+%%% ToC (table of contents) APPEARANCE
+\usepackage[nottoc,notlof,notlot]{tocbibind} 
+\usepackage[titles,subfigure]{tocloft}
+\renewcommand{\cftsecfont}{\rmfamily\mdseries\upshape}
+\renewcommand{\cftsecpagefont}{\rmfamily\mdseries\upshape} %
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{bbm}
+\usepackage{empheq}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{pgfplots}
+
+\pgfplotsset{width=10cm,compat=1.9}
+
+\renewcommand{\L}[1]{\mathcal{L}\{#1\}}
+\newcommand{\ans}[1]{\boxed{\text{#1}}}
+\newcommand{\vecs}[1]{\langle #1\rangle}
+\renewcommand{\hat}[1]{\widehat{#1}}
+\newcommand{\F}[1]{\mathcal{F}(#1)}
+\renewcommand{\P}{\mathbb{P}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\qed}{\quad \blacksquare}
+\newcommand{\brak}[1]{\langle #1 \rangle}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\bbm}[1]{\mathbbm{#1}}
+\newcommand{\ind}{\mathbbm{1}}
+\newcommand{\ellipsis}{\; \dots, \;}
+\newcommand{\Var}{\text{Var}\;}
+\newcommand{\mfX}{\mathfrak{X}}
+\newcommand{\Z}{\mathbb{Z}}
+
+\title{APMA 1690: Computational Probability and Statistics}
+\author{Milan Capoor}
+\date{Fall 2023}
+
+\begin{document}
+\maketitle
+\textbf{Goal of the course:} (Approximately) Compute integrals using Monte Carlo methods
+
+\section*{Lecture 1: Sept 9}
+\subsection*{Arc of the Course}
+\textbf{Example:} Motivating the goal of the course
+\begin{align*}
+    I &= \int_0^1 \arccos \left(\frac{\cos(\frac{\pi x}{2})}{1 + 2\cos(\frac{\pi x}{2})}\right)\; dx = \frac{5\pi}{12}
+\end{align*}
+This is \emph{really} hard! But using Monte Carlo methods we can do much better!
+
+\textbf{Law of Large Numbers:} Suppose $X_1, \, ...., X_n$ are independently and identically distributed random variables. Then, when $n \to +\infty$,
+\[\frac{1}{n}\sum_{i=1}^n f(X_i) \to \E [f(X_1)]\]
+
+If we define $X_1 \sim \text{Unif}(0, 1)$, then the PDF of $X_1$ is 1. 
+
+Applying this to the integral above, let the integrand be denoted $f(x)$ so 
+\[I = \int_0^1 f(x)\; dx = \int_0^1 f(x) \cdot 1 \; dx = \E [f(X_1)]\]
+
+Putting all of this together, 
+\[I = \E[f(X_1)] \approx \frac{1}{n} \sum_{i=1}^n f(X_i)\]
+which means that by doing some transformations on the integral and averaging many random outputs of the integrand, we can use the average to approximate the value of the integral with good accuracy. 
+
+In fact, with $n=10000$, we approximate $I = 1.308827$ when in fact $I = \frac{5\pi}{12} \approx = 1.308997$ which is quite good!
+
+\textbf{A problem:} Notice! This method \emph{assumes} we are able to generate iid random variables. This introduces some questions:
+\begin{enumerate}
+    \item What is ``randomness''?
+    \item How do we generate random numbers?
+    \item How large is our error when using stochastic methods? How do we control this error?
+    \item What if the inputs are random vectors instead of random numbers? What if the problem is multi-variable?
+    \item How do we manage unreasonable time and memory costs?
+\end{enumerate}
+
+\textbf{Moving towards a solution:} To address the last concern especially, we can compromise on the iid condition to generate a Markov chain where $\vec{X}_n \dot \sim \Pi$
+
+\textbf{Heuristic Ergodic Theorem:}
+Suppose $\vec{X}_1, \vec{X}_2,\, ..., \vec{X}_n$ is a Markov chain such that $\vec{X}_n \dot \sim \Pi$ when n is large. Then 
+\[\frac{1}{n} \sum_{i=1}^n f(\vec{X}_i) \approx \int f(x) \cdot \Pi(x)\; dx\]
+
+Really, this just introduces more questions:
+\begin{enumerate}
+    \setcounter{enumi}{5}
+    \item What is the ergodic theorem?
+    \item How do we generate a Markov chain satisfying this assumption that $\vec{X}_n \dot \sim \Pi$?
+\end{enumerate}
+
+This will lead us to two algorithms:
+\begin{itemize}
+    \item Metropolis-Hastings Algorithm
+    \item Gibbs sampling (developed by Prof Geman at Brown!)
+\end{itemize}
+
+\subsection*{Random Variables}
+\textbf{Example: Coin toss}
+
+With a sample space $\Omega = \{H, T\}$, let $X$ represent the outcome of flipping the coin once. Then really, $X : \Omega \mapsto \{0, 1\}$.
+
+In fact, this gives us a formal definition for a \emph{random variable}; a random variable is a function $X$ that maps a sample space $\Omega$ to $\R$.
+\[\text{For each fixed } \omega \in \Omega, \quad X(\omega) \in \R\]
+
+\section*{Lecture 2: Sept 12}
+\textbf{What is randomness?}
+
+\subsection*{Probability Theory}
+\begin{enumerate}
+    \item Sample Space ($\Omega$)
+    \item Random Variable ($X$)
+    \item Probability ($\P$)
+\end{enumerate}
+
+\textbf{Sample space:} the collection of all possible outcomes of an event 
+\emph{Examples:}
+\begin{itemize}
+    \item For flipping a coin once, $\Omega = \{H, T\}$
+    \item Rolling a six sided die, $\Omega = \{1, 2, 3, 4, 5, 6\}$
+\end{itemize}
+
+\textbf{Remark:} the essential characteristic of experiments in sample space is that the outcome in uncertain before performing the experiment.
+
+\textbf{Event:} $A \subseteq \Omega$
+
+\textbf{Random Variable:} a function $X: \Omega \to \R^d$ 
+
+\textbf{Deterministic/Pseudo-Random Variable:} $x \in \R^d, \quad X(\omega) = x, \; \forall \omega \in \Omega$
+
+\textbf{Probability:} a real-valued function of all subsets of omega ($\P: A \to \R \quad A \subseteq \Omega)$ which satisfies the following three axioms:
+\begin{enumerate}
+    \item $\forall A \subseteq \Omega, \quad \P(A) \geq 0$
+    \item $\P(\Omega) = 1$
+    \item $\forall \{A_n\}_{n=1}^\infty \subseteq \Omega \text{ such that } A_i \cap A_j = \emptyset \; (i \neq j)$ (for any mutually exclusive infinite sequence of events),
+    \[\P\left(\bigcup_{n=1}^\infty A_n\right) = \sum_{n=1}^\infty \P(A_n)\]
+\end{enumerate}
+
+\textbf{Theorem:} The probability of an impossible event is 0.
+
+\emph{Proof:} 
+Let $A_n = \emptyset \quad n = \{1, 2, \,..., n\}$. Clearly, for any $i \neq j$, 
+\[A_i \cap A_j = \emptyset \cap \emptyset = \emptyset\] 
+so 
+\begin{align*}
+    \P\left(\bigcup_{n=1}^\infty A_n\right) &= \sum_{n=1}^\infty \P(A_n)\\
+    \P\left(\bigcup_{n=1}^\infty \emptyset\right) = \P(\emptyset) &= \sum_{n=1}^\infty \P(\emptyset)
+\end{align*}
+Define $a := \P(\emptyset)$. Then, 
+\[a = \sum_{n=1}^\infty a\]
+so $a = 0 \implies \P(\emptyset) = 0 \qed$
+
+\section*{Lecture 3: Sept 14}
+\subsection*{Indicator Functions}
+\textbf{Definition:} Let $A \subseteq \R^d$, 
+\[\mathbbm{1}_A(x) = \begin{cases}
+    1 \quad x \in A\\
+    0 \quad x \not \in A
+\end{cases}\]
+
+\textbf{Examples:}
+\begin{enumerate}
+    \item $d=1, \quad A = (0, 1) \subseteq \R^1$
+    \[\bbm{1}_{(0, 1)}(x) = \begin{cases}
+        0 \quad x \leq 0\\
+        1 \quad 0 < x < 1\\
+        0 \quad x \geq 1
+    \end{cases} \]
+
+    \item $d = 1, \quad A = [0, +\infty)$ (Heaviside function)
+    \[\bbm{1}_{[0, \infty)} = \bbm{1}(x \geq 0) = \begin{cases}
+        1 \quad x \geq 0 \\
+        0 \quad \text{otherwise}
+    \end{cases}\]
+\end{enumerate}
+
+\subsection*{Interlude: Probability theory vs. Statistics}
+Probability seeks to establish the expected outcome of an experiment before it is performed, given $\P$.
+
+Statistics seeks to infer $\P$ from data observed during the experiment. 
+
+\subsection*{Distribution}
+\textbf{Definition:} Let $X$ be a $\R^d$-valued RV defined on the probability space $(\Omega, \P)$. Then, the distribution of $X$ according to $\P$ is 
+\[\P\left(\left\{ \omega \in \Omega: X(\omega) \in A \right\}\right) \quad \forall A \subseteq \R^d\]
+
+\textbf{Remarks:}
+\begin{itemize}
+    \item To study the distribution of $X$ we must examine all $A \subseteq \R^d$ which is very hard 
+    \item When $d=1$ this is easier because we must only examine the interval of the form $(-\infty, t] \quad \forall t\in \R$
+\end{itemize}
+
+\subsection*{Cumulative Distribution Functions (CDFs)}
+\textbf{Definition:} Let $X: (\Omega, \P) \to \R$. Then the CDF of $X$ is $F_X: \R \to \R$
+\[F_X(t) := \P\left(\{\omega \in \Omega : X(\omega) \leq t\}\right)\]
+
+\textbf{Examples:}
+\begin{itemize}
+    \item $X \sim \text{Exp}(\lambda)$
+    \[F_X(t) = (1 - e^{-\lambda t}) \cdot \bbm{1}(t \geq 0 )\]
+    \begin{center}
+        \begin{tikzpicture}
+            \begin{axis}[
+                yticklabels={0, , , , , , 1}, 
+                xticklabels={,,},
+                axis lines=left, 
+                xlabel=$t$, 
+                ylabel=$F_X$
+            ]
+                \addplot[blue, domain=0:10, label=($F_X$)]{1 - e^(-x)};
+                \addplot[red, dashed, domain=0:10, label=1]{1};
+            \end{axis}
+        \end{tikzpicture}
+    \end{center}
+
+    \item $X \sim \text{Bernoulli}(\frac{1}{2})$
+    \[F_X(t) = \begin{cases}
+        0 \quad t <0\\
+        \frac{1}{2} \quad 0 \leq t< 1\\
+        1 \quad t \geq 1
+    \end{cases}\]
+    
+    \begin{center}
+        \begin{tikzpicture}
+            \begin{axis}[
+                xticklabels={, $0$, , , $1$},
+                ytick={0, 0.25, 0.5, 0.75, 1}, 
+                yticklabels={$0$, ,$\frac{1}{2}$, , $1$},
+                axis lines=middle
+            ]
+                \addplot[blue, very thick, domain=-1:0,]{0};
+                \addplot[blue, very thick, domain=0:1]{0.5};
+                \addplot[blue, very thick, domain=1:2]{1};
+            \end{axis}
+        \end{tikzpicture}
+    \end{center}
+\end{itemize}
+
+\subsection*{Continuous Random Variables}
+\textbf{Definition:} Let $X : (\Omega, \P) \to \R$. If its CDF is continuous and piecewise differentiable (``absolutely continuous'') then $X$ is a \emph{continuous random variable}
+
+\textbf{Probability Density Function (PDF):} 
+\[p_X(t) := \frac{d}{dt}F_X(t)\]
+where $\frac{d}{dt}$ is the piecewise derivative. 
+
+\textbf{Remarks:} the CDF determines the corresponding PDF via differentiation and the PDF determines the CDF via integration
+\begin{align*}
+    p_X(x) &= \frac{d}{dx} F_X(x)\\
+    F_X(x) &= \int_{-\infty}^t p_X(t)\; dt
+\end{align*}
+
+\textbf{Theorem:} Let $X : (\Omega, \P) \to \R$. 
+\begin{enumerate}
+    \item $F_X(t)$ is non-decreasing: $F_X(t_1) \leq F_X(t_2)$ if $t_1 \leq t_2$
+    \item $\lim_{t\to -\infty} F_X(t) = 0, \quad \lim_{t\to \infty} F_X(t) = 1$ 
+\end{enumerate}
+
+\section*{Lecture 4: Sept 19}
+\subsection*{CDFs}
+The CDF of $X \sim \text{Bernoulli}(\frac{1}{3})$ can be written in a number of ways.
+
+First, by probabilities, 
+\[\begin{cases}
+    \P(X = 1) = \frac{1}{3}\\
+    \P(X = 0) = \frac{2}{3}
+\end{cases}\]
+
+Which yields a CDF
+\[F_X(t) = \begin{cases}
+    0 \quad t < 0\\
+    \frac{2}{3} \quad 0 \leq t < 1\\
+    1 \quad t \geq 1
+\end{cases}\]
+
+Which describes
+\[F_X(t) = \frac{2}{3} \ind_{(t \geq 0)}(t) + \frac{1}{3}\ind_{(t \geq 1)}(t) = \sum_{k=0}^1 p_k \cdot \ind_{(t\geq x_k)}(t)\]
+where $x_0 = \P(X = 0)$ and $x_1 = \P(X = 1)$
+
+\subsection*{Discrete Random Variables}
+\textbf{Definition:} Let $X$ be $\R^1$-valued RV on $(\P, \Omega)$. $X$ is a discrete RV if its CDF is
+\[F_X(t) = \sum_{k=0}^K p_k \cdot \ind_{(t \geq x_k)}(t)\]
+where $\{x_k\}_{k=0}^K$ are distinct real numbers, $\{p_k\}_{k=0}^K$ are non-negative real numbers satisfying $\sum_{k=0}^K p_k = 1$ and $K$ is a positive integer (or $+\infty$)
+
+\textbf{Probability Mass Function (PMF):} the ordered sequence $\{p_k\}_{k=0}^K$ which determines the CDF. 
+
+\textbf{Theorem (Non-rigorously):} For a discrete RV, 
+\[p_k = \P(X = k)\]
+
+\subsection*{Mixed Random Variables (Optional)}
+\textbf{Example:} Let $Y \sim \text{Bernoulli}(\frac{1}{2})$ and $Z\sim N(0,1)$ be independent RVs on $(\Omega, \P)$. 
+\[X(\omega) := Y(\omega) + (1 - Y(\omega)) \cdot Z(\omega)\]
+
+Note that $X$ is a RV because $X : \Omega \to \R$. 
+
+\subsection*{Expected Values}
+\textbf{Notation:} Let $g: \R \to \R$ and $X: \Omega \to \R$. Then $g(X(\omega)) : \Omega \to \R$ so we denote $g(X)$ as a random variable. 
+
+\textbf{Definition:}
+Let $g : \R \to \R$. 
+
+\begin{enumerate}
+    \item Suppose $X$ is a continuous RV whose PDF is $p_X$.
+    
+    If $\int_{-\infty}^{\infty} |g(x)| \cdot p_X(x)\; dx < \infty$, 
+    \[\E[g(X)] := \int_{-\infty}^{\infty} g(x)\cdot p_X(x)\; dx\]
+    otherwise, $\E[g(X)]$ does not exist.
+
+    \item Suppose $X$ is a discrete RV with CDF $F_X(t) = \sum_{k=0}^k p_k \cdot \ind_{(t\geq x_t)}(t)$. 
+    
+    If $\sum_{k=0}^K |g(x_k)| \cdot p_k < \infty$, then 
+    \[\E[g(X)] := \sum_{k=0}^K g(x_k) \cdot p_k\]
+    otherwise, $\E[g(X)]$ does not exist.
+\end{enumerate}
+
+\section*{Lecture 5: Sept 21}
+\subsection*{Law of Large Numbers (LLN)}
+\textbf{Theorem:} Let $X_1,\; \dots, \; X_n$ be $\R^1$-dimensional RVs on $(\Omega, \P)$. If the RVs are independently and identically distributed and $\E[X_1]$ exists, then 
+\[\boxed{\P\left(\left\{\omega \in \Omega: \lim_{n\to\infty} \left(\frac{1}{n}\sum_{i=1}^n X_i(\omega)\right) = \E X_1\right\}\right) = 1}\]
+
+\textbf{Corollary:} Under the same conditions, 
+    \[\P\left(\left\{\omega \in \Omega: \lim_{n\to \infty} \left(\frac{1}{n}\sum_{i=1}^n X_i(\omega)\right) \neq \E X_1\right\}\right) = 0\]
+
+\textbf{Remarks:}
+\[\overline X_n(\omega) := \frac{1}{n}\sum_{i=1}^n X_i(\omega)\]
+Then the following are all random variables:
+\begin{itemize}
+    \item $\overline X_n$
+    \item $\lim_{n\to\infty} \overline X_n(\omega)$
+    \item $e_n(\omega) := |\overline X_n(\omega) - \E X_1|$
+\end{itemize}
+
+So the LLN can also be written as 
+\[\P(\{\omega \in \Omega: \lim_{n\to\infty} e_n(\omega) = 0\}) = 1\]
+
+\subsection*{Law of the Iterated Logarithm}
+\textbf{Variance:}
+\[\Var(X) = \E(X^2) - (\E X)^2\]
+
+\textbf{Theorem:} Let $X_1, X_2, X_3,...$ be identically and independently distributed RVs defined on $(\Omega, \P)$ Suppose $\E X_1$ and $\text{Var}(X_1)$ exist. 
+Then, 
+\[\P\left(\{\omega \in \Omega : \lim_{m \to \infty} \left[
+\sup_{n \geq m} \left(\frac{e_n(\omega)}{\sqrt{\text{Var}X_i \frac{2\log(\log n)}{n}}}\right)\right] = 1\}\right) = 1\]
+
+Heuristically, when n is large,
+\begin{empheq}[box=\fbox]{align*}
+    \P(\{\omega \in \Omega : |e_n(\omega)| \leq \sqrt{\text{Var}X_i \frac{2\log(\log(n))}{n}}\}) &\approx 1\\
+    \P(\{\omega \in \Omega : |e_n(\omega)| > \sqrt{\text{Var}X_i \frac{2\log(\log(n))}{n}}\}) &\approx 0\\
+\end{empheq}
+
+\subsection*{Empirical CDFs}
+\textbf{Definition:} Suppose $X_1, \ellipsis X_n$ are RVs defined on $(\Omega, \P)$. 
+\[F_n(\omega, t) = \frac{1}{n}\sum_{i=1}^n \ind_{t \geq X_i(\omega)}(t)\]
+
+For each fixed $\omega$, $F_n$ is a function of $t$. For each fixed $t$, $F_n$ is a random variable. Therefore, $F_n$ is a \emph{stochastic process}
+
+If $X_1, \ellipsis X_n \overset{iid}{\sim} F$, we would like to use $F_n(\omega, t)$ to estimate $F$:
+\[|F_n(\omega, t) - F(t)| \overset{?}{\approx} 0\]
+
+\subsection*{Glivenko-Contelli Theorem (1933)}
+\textbf{Theorem:} Suppose $X_1, \ellipsis X_n$ are RVs defined on $(\Omega, \P)$. If the RVs are iid, then 
+\[\P(\{\omega \in \Omega: \lim_{n\to \infty} \max_t|F_n(\omega, t) - F(t)| = 0\}) = 1\]
+
+In other words, ``$F_n(\omega, t)$ converges to $F$ uniformly in $t$ with probability 1.''
+
+\section*{Lecture 6: Sept 26}
+\subsection*{True-Random Numbers}
+\textbf{Definition:} Real numbers $x_2, x_2, \ellipsis x_n$ are called \emph{random numbers} from a distribution associated with a CDF if 
+\begin{enumerate}
+    \item there is an underlying probability space $(\Omega, \P)$
+    \item $\exists X_1, X_2, \ellipsis X_n$ are iid random variables defined on $(\Omega, \P)$ which share the CDF $F$
+    \item 
+    \[\exists \omega^* \in \Omega: \begin{cases}
+        x_1 = X_1(\omega^*)\\
+        x_2 = X_2(\omega^*)\\
+        \qquad \vdots\\
+        x_n = X_n(\omega^*)
+    \end{cases}\]
+\end{enumerate}
+
+\textbf{Remarks:}
+\begin{enumerate}
+    \item Each RV $X_i$ mainly refers to a truly random RV ($X_i$ is not a constant function)
+    \item A random variable $X_i(\omega)$ is a function $\omega \to \R$
+    \item A random number $x_i = X_i(\omega^*)$ is a number in $\R$
+\end{enumerate}
+
+\subsection*{Types of Random Number Generators}
+\begin{enumerate}
+    \item Hardware RNGs
+    \begin{itemize}
+        \item \emph{Pros:} create true random numbers
+        \item \emph{Cons:} slow and expensive
+    \end{itemize}
+
+    \item Pseudo RNGs
+    \begin{itemize}
+        \item \emph{Pros:} Very fast 
+        \item \emph{Cons:} Not truly random
+    \end{itemize}
+\end{enumerate}
+
+\subsection*{Pseudo-random Number Generators}
+\textbf{Definition:} Suppose $F$ is a given CDF. Let $g: \{1, 2, 3, \ellipsis\} \to \R$ be a function. $g$ is called a PRNG for $F$ if 
+\[\lim_{n\to \infty} \left(\sup_t\bigg \vert \frac{1}{n}\sum_{i=1}^n \ind_{(t \geq g(i))} - F(t) \bigg \vert\right)\]
+and the outputs of $g$ are pseudo-random numbers.
+
+Essentially, \emph{the numbers $g(i)$ look like true-RNs iid from F but are not}.
+
+\textbf{Glivenko-Contelli theorem vs PRNGs:}
+
+The essence of the GCT is that the empirical CDF of a sequence of iid RVs converges to the true CDF. PRNGs, meanwhile, function in the reverse direction: when the empirical CDF converges to F, the random variables look like true iid RVs. 
+
+\textbf{Example:} the Multiplicative Congruential Generator (MCG)
+
+Let $X$ be a RV defined on $(\Omega, \P)$ and $m \in \mathbb{N}$. We say $X \sim \text{Unif}(\{1, 2, \ellipsis m-1\})$ so 
+\[\P(X = i) =  \frac{1}{m - 1} \quad 1 \leq i \leq m-1\]
+\[\implies F_X(t) = \frac{1}{m -1}\sum_{i=1}^n \ind_{(t \geq i)}\]
+
+\emph{The Algorithm:}
+\begin{itemize}
+    \item Input: 
+    \begin{enumerate}
+        \item `properly chosen'' integers $m$ and $a$ (in an old version of Matlab, they used $m = 2^{31} - 1$ and $a = 7^5$) where ``properly chosen'' involves lots of number theory
+        \item a seed $s$
+        \item a sample size $n$
+    \end{enumerate}
+
+    \item Output: $g(1), g(2), \ellipsis g(n)$ which look like iid random numbers from $\text{Unif}(\{1, 2, \ellipsis m-1\})$
+\end{itemize}
+
+Process:
+\begin{verbatim}
+    g(1) <-- s
+
+    for i= 1, 2, ..., N
+        g(i + 1) <-- ag(i) mod m
+    end
+\end{verbatim}
+
+Mathematically, 
+\begin{align*}
+    Y(\omega) &=\frac{X(\omega)}{m} \sim \text{Unif}(\{\frac{1}{m}, \frac{2}{m}, \ellipsis \frac{1}{m-1}\}) \implies F_Y(t) &= \frac{1}{m - 1} \sum_{i=1}^{m-1} \ind_{(t \geq \frac{i}{m})}
+\end{align*}
+\[\implies \frac{g(1)}{m}, \frac{g(2)}{m}, \ellipsis \frac{g(n)}{m} \text{ all look like iid RVs from } \text{Unif}(\{\frac{1}{m}, \frac{2}{m}, \ellipsis \frac{1}{m-1}\})\]
+
+Recall that $m = 2^{31} -1$ is a very large number. So
+\[F_Y(t) \frac{1}{m - 1} \sum_{i=1}^{m-1} \ind_{(t \geq \frac{i}{m})} \approx \lim_{m\to \infty} \sum_{i=1}^{m-1} \ind_{(t \geq \frac{i}{m})} \overset{*}{=} F_{\text{Unif}(0, 1)}(t)\]
+where the starred equality comes from the definition of Riemann integrals. 
+
+All together, we thus have a collection of (pseudo) random numbers that look like they were generated iid from $\text{Unif}(0, 1)$.
+
+\section*{Lecture 7: Sept 28}
+\subsection*{A question}
+Let $X_1$ and $X_2$ be RVs on $(\Omega, \P)$ with the same distribution. For any $\omega \in \Omega$, do we have $X_1(\omega) = X_2(\omega)$? 
+
+\textbf{Answer:} No.
+
+Set up an experiment where we flip a coin twice. Then 
+\[\Omega = \left\{\omega = (\omega_1, \omega_2): \omega_i \in \{H, T\}\right\}\]
+with 
+\[X_i(\omega) = \begin{cases}
+    1 \quad \omega_i = H\\
+    0 \quad \omega_i = T
+\end{cases} \sim \text{Bernoulli}\left(\frac{1}{2}\right)\]
+
+Let the result of the experiment show $\omega^* = (H, T)$ Then $X_1(\omega^*) = 1$ but $X_2(\omega^*) = 0$ so 
+\[X_1(\omega^*) \neq X_2(\omega^*)\]
+
+\subsection*{Review}
+\textbf{Pseudo-Random Number Generator:} a function $g_i: \mathbb{N} \to \R$ if $g(1), g(2), \ellipsis g(n)$ ``look like'' true random numbers iid from $F$. 
+
+\textbf{Note:} ``look-like'' means that we fail to reject the hypothesis that the generated numbers are true RNs iid from $F$. (we make a Type II error)
+
+\subsection*{Hypothesis testing}
+There are two ways to test $H_0$:
+\begin{itemize}
+    \item Kolmogrov-Smirnov Test (1933) for continuous RVs
+    \item $\chi^2$-test (for discrete RVs)
+\end{itemize}
+
+\subsection*{Multiplicative Congruential Generator (MCG)}
+Using the following algorithm with $s$ being any seed and $a$ and $m$ carefully chosen via number theorem, we can generate $N$ Pseudo RNs for $\text{Unif}(0, 1)$:
+\begin{verbatim}
+    g(1) <-- s
+
+    for i= 1, 2, ..., N
+        g(i + 1) <-- ag(i) mod m
+    end
+\end{verbatim}
+
+In this class, we will pretend like these are true random numbers. 
+
+\subsection*{Inverse CDF Method}
+\emph{How do we generate RNs from other distributions than $\text{Unif}(0, 1)$?}
+
+\textbf{Inverse:} Let $F$ be the CDF of the distribution of interest. Suppose $F$ has an inverse function $F^{-1}$:
+\[y = F(x) \iff x = F^{-1}(y)\]
+
+\textbf{Theorem:} Suppose $U \sim \text{Unif}(0, 1)$ is a random variable defined on $(\Omega, \P)$. We define a random variable $X$ by 
+\[X(\omega) := F^{-1}(U(\omega))\]
+Then, the CDF of $X$ is $F$. 
+
+\emph{Proof:} 
+
+By the definitions of the CDF and $X$, 
+\[F_X(t) = \P(X \leq t) = F^{-1}(U(\omega))\]
+Then, because the inverse of $F$ is non-decreasing (by assumption),
+\[F_X(t) = \P(U \leq F(t))\]
+Then by the CDF of $U$, 
+\[\P(U \leq F(t)) = F(t)\]
+so 
+\[F_X(t) = F(t) \qed\]
+
+\textbf{Remark:} in the above proof we made two strong assumptions: 1) the inverse exists; 2) the inverse is non-decreasing 
+
+The first assumption is particularly bold because many CDFs do not have an inverse. The simplest example is $\text{Bernoulli}(\frac{1}{2})$
+
+\textbf{General Case Theorem:} 
+
+Suppose $F$ is any CDF. We let $U \sim \text{Unif}(0, 1)$ and define new random variable,
+\[G(u) := \inf\; | \;\{t \in \R: F(t) \geq u\}\]
+and 
+\[X(\omega) := G(U(\omega))\]
+Then, the CDF of $X$ is $F$. 
+
+This gives us a new algorithm for generating random numbers:
+\begin{enumerate}
+    \item Input a CDF $F$ and a sample size $n$
+    \item Generate $x_1, x_2, \ellipsis x_n \overset{iid}{\sim} \text{Unif}(0, 1)$ via the MCG algorithm
+    \item Let $y_i = G(x_i) = \inf\{t \in \R : F(t) \geq x_i\}$ for $i \in [1, n]$
+\end{enumerate}
+
+\textbf{Example:} We are interested in $\text{Exp}(1)$ whose CDF is 
+\[F(t) = (1 - e^{-t}) \cdot \ind_{(t > 0)} \]
+We can derive the formula 
+\[G(u) = \log\left(\frac{1}{1 - u}\right)\]
+Then via MCG, we generate $n$ random numbers from the standard uniform distribution. and calculate
+\[y_i = \log\left(\frac{1}{1 - x_i}\right)\] 
+for each $x_i$ generated from the MCG. 
+
+Thus, we have created $y_1, y_2, \ellipsis y_n \overset{iid}{\sim} \text{Exp}(1)$.
+
+\section*{Lecture 8: Oct 3}
+\subsection*{Monte Carlo Integration}
+If an integral of the form 
+\[v = \int_{-\infty}^{\infty} H(x) \cdot f(x)\; dx\]
+satisfies 
+\begin{enumerate}
+    \item $f(x)$ is the PDF of a continuous RV
+    \item $\int_{-\infty}^{\infty} \big\vert H(x) \big\vert \cdot f(x)\; dx < \infty$ is finite
+\end{enumerate}
+
+\textbf{Remark:} If $X_1, X_2, \dots,\; X_n$ are continuous iid RVs on $(\Omega, \P)$, and have the same PDF $f(x)$, then 
+\[\E H(X_1) = \int_{-\infty}^{\infty} H(x) \cdot f(x)\; dx\]
+exists (by condition 2).
+
+We can partition $\Omega$ such that 
+\begin{align*}
+    \Omega_1 &= \{\omega \in \Omega: \lim_{n\to \infty} \frac{1}{n}\sum_{i=1}^n H(X_i(\omega)) = \E H(X_1)\}\\
+    \Omega_2 &= \Omega_1^c
+\end{align*}
+But by the LLN, $\P(\Omega_1) = 1$ and $\P(\Omega_0) = 0$.
+
+Suppose we (pretend we) have generated true-RNs $x_1, x_2, \, \dots,\, x_n$ from the given PDF $f(x)$, i.e. from CDF 
+\[F(t) = \int_{-\infty}^t f(x)\; dx\]
+(such as from the inverse CDF method) 
+
+By the definition of true-RNs, $\exists \omega^* \in \Omega$ such that
+\[x_1 = X_1(\omega^*), \quad x_2 = X_2(\omega^*), \quad \dots\]
+
+Assuming we are not extremely unlucky, 
+\[\lim_{n\to \infty} \frac{1}{n}\sum_{i=1}^n H(x_i) = \lim_{n\to \infty} \frac{1}{n}\sum_{i=1}^n H(X_i(\omega^*)) = \E[H(X_1)] = \int_{-\infty}^{\infty} H(x)\cdot f(x)\; dx\]
+
+All together, this allows us to define an estimator which approximates the integral $v$ with large enough $n$ such that 
+\[\boxed{\hat v = \frac{1}{n}\sum_{i=1}^n H(x_i) \approx \int_{-\infty}^{\infty} H(x) \cdot f(x)\; dx}\]
+
+\subsection*{Examples}
+\begin{itemize}
+    \item $H(x) = x, \quad f(x) = \text{PDF of Unif}(0, 1) = \ind(0 < x < 1)$
+    So 
+    \[v = \int_{-\infty}^{\infty} H(x) f(x)\; dx = \int_0^1 H(x)\; dx = \int_0^1 x\; dx = \frac{1}{2}\]
+    Generating 10000 RNs from $\text{Unif}(0, 1)$, we get 
+    \[\hat v = 0.5016\]
+
+    \item $H(x) = x^5, \quad f(x) = \ind(0 < x < 1)$
+    \[v = \int_0^1 x^5 \; dx = \frac{1}{6} \approx 0.1667\]A
+    And again with $n = 10000$,
+    \[\hat v = 0.1697\]
+\end{itemize}
+
+\subsection*{Estimation Error}
+\begin{align*}
+    e_n &= \big\vert \hat v_n - v\big\vert\\
+    &= \bigg\vert \frac{1}{n}\sum_{i=1}^n H(X_i(\omega)) - \E[H(X_1)] \bigg\vert\\
+    &\overset{LIL}{\leq} \sqrt{\Var H(X_1)} \cdot \sqrt{\frac{2\log(\log(n))}{n}}
+\end{align*}
+
+\vspace*{0.25in}
+
+\textbf{Problem:} 
+
+We used the Monte Carlo method in the first place because we could not calculate $\E[H(X_1)]$ but
+\[\Var[H(X_1)] = \E[(H(X_1))^2] - (E[H(X_1)])^2\]
+so we cannot actually calculate the error of the estimator. So, in practice, we use the \emph{sample variance}
+\[\Var(H(X_1)) \approx \widehat{\sigma_n^2} = \frac{1}{n - 1} \sum_{i=1}^n\left(H(x_i) - \hat v_n\right)^2\]
+
+Which gives us the approximation for the error
+\[e_n = \big\vert \hat v_n - v \big\vert \leq \sqrt{\widehat{\sigma_n^2}} \cdot \sqrt{\frac{2\log(\log n)}{n}}\]
+
+\subsection*{Riemann Sum Integration}
+Let us focus on the specific integral
+\[\int_0^1 H(x)\; dx = \lim_{n\to\infty} \frac{1}{n}\sum_{i=1}^n H(\frac{i}{n})\]
+
+From calculus, this sum $\sum_{i=1}^n \frac{1}{n}H(\frac{i}{n})$ is just the sum of the area of the estimating rectangles of height $H(i/n)$ and width $1/n$.
+
+Applying this to the same problems as the Monte Carlo integration, the Riemann Sum Estimator
+\[\boxed{\hat R_n = \frac{1}{n}\sum_{i=1}^n H(\frac{i}{n})}\]
+does much better than Monte Carlo Estimator $\hat v_n$:
+\begin{itemize}
+    \item $v = \int_0^1 x \; dx = 0.5, \quad \hat{v}_{10000} = 0.5016, \quad \hat{R}_{10000} = 0.5$
+    \item $v = \int_0^1 x^5 \; dx \approx 0.1667, \quad \hat{v}_{10000} = 0.1697, \quad \hat{R}_{10000} = 0.1667$
+\end{itemize}
+So, in general, the Riemann estimator is much more accurate. 
+
+\subsection*{Lecture 9: Oct 5}
+\subsection*{High Dimensional Integrals}
+\emph{Question:} If the Riemann estimator is more accurate, why would we ever use Monte Carlo integration? 
+
+\emph{Answer:} High dimensional space. Consider:
+\[\underbrace{\int_0^1 \dots \int_0^1 \int_0^1}_{\text{100 integrals}} f(t_1, t_2, \, \dots,\, t_{100}) \; dt_1\, dt_2\, \dots\, dt_{100} \approx \underbrace{\frac{1}{n}\sum_{i=100}^n \dots \frac{1}{n}\sum_{i=2}^n \frac{1}{n}\sum_{i=1}^n}_{\text{100 averages}} f(\frac{i_1}{h}, \frac{i_2}{h}, \, \dots\, \frac{i_{100}}{h})\]
+
+In code, this would be something like 100 nested for loops calculating $n^{100}$ terms. In R, even $10^{12}$ terms is already 0.75 TB! 
+
+\subsection*{Interlude: High-Dimensional Probability Theory}
+\textbf{Random Vector:} $\vec{X} = (X^{(1)}, X^{(2)}, \dots, X^{(n)})$ is a $\R^d$-valued random variable if $\vec{X}: \Omega \to \R^d$
+
+\emph{Note:} each $X^{(i)}$ is also a random variable $X^{(i)}: \Omega \to \R$
+
+\textbf{CDF:} the CDF of a random vector $\vec X$ is 
+\[F_{\vec X}(x_1, x_2, \dots,\, x_d) = \P(\omega \in \Omega: \bigcap_{i=1}^d X^{(i)}(\omega) \leq x_i)\] 
+
+\textbf{Continuous Random Vector:} if each partial derivative $\frac{\partial}{\partial x_i} F(x_1, x_2, \dots,\, x_d)$ exists piecewise, then $\vec X$ is a continuous random vector 
+
+Further, the \emph{PDF} of $\vec X$ is 
+\[f(x_1, x_2, \dots,\, x_d) := \frac{\partial}{\partial x_1} \frac{\partial}{\partial x_2} \dots \frac{\partial}{\partial x_d} F(x_1, x_2, \dots,\, x_d)\]
+
+\textbf{Expectation:}
+
+Let $H : \R^d \to \R$. Then $H(\vec{X}): \Omega \to \R^d \to \R$ so it is a random variable. Thus, if $\vec X$ is continuous and $\int_{\R^d} \big\vert H(\vec x) \big \vert \cdot f(\vec x) \; d\vec x < \infty$, then 
+\[\E[H(\vec X)] = \int_{\R^d} H(x_1, \dots,\, x_d) \cdot f(x_1, \dots, \, x_d)\; dx_1 \dots dx_d\]
+
+\subsection*{High-dimensional Monte Carlo}
+\begin{enumerate}
+    \item Generate $n$ random vectors iid from the PDF $f$ of a d-dimensional distribution 
+    
+    \item Then the LLN implies 
+    \[\lim_{n\to \infty} \frac{1}{n} \sum_{i=1}^n H(\vec X_i) = \E[H(\vec X_1)] = \int_{\R^d} H(\vec x) \cdot f(\vec x) \; d\vec x\]
+
+    \item We define an estimator 
+    \[\hat v_n = \frac{1}{n} \sum_{i=1}^n H(\vec X_i)\]
+
+    \item The error of the estimator is 
+    \[e_n = \big\vert \hat v_n - v \big\vert \leq \sqrt{\Var H(\vec X_1)}\cdot \sqrt{\frac{2\log(\log n)}{n}}\]
+\end{enumerate}
+
+\subsection*{Generating random vectors}
+Note that the method described above depends on the assumption that we can generate iid random vectors from a given d-dimensional PDF in the first place. This is a very strong assumption! In general, this is not feasible. 
+
+We make the following assumptions in order to generate the vectors:
+\begin{enumerate}
+    \item $f(\vec x) = \prod_{i=1}^d f_i(x_i)$ where each $f_i$ is the PDF of a $\R$-valued RV. 
+    \item If $X^{(1)} \sim f_1, \; X^{(2)} \sim f_2, \dots$ and $X^{(1)} \dots X^{(d)}$ are independent, then 
+    \[\vec X = (X^{(1)}, X^{(2)}, \dots,\, X^{(d)}) \sim f(x_1, x_2, \dots,\, x_d)\]
+\end{enumerate}
+Together, these allow us to generate the iid vectors via the following algorithm: 
+\begin{verbatim}
+    For i = 1...n
+        For j = 1...d
+\end{verbatim}
+\qquad \qquad \qquad Generate $X_i^{(j)} \sim f_j(x_j$)
+\begin{verbatim}
+        end
+    end
+\end{verbatim}
+
+This allows us to generate the vector with only $n \cdot d$ numbers instead of the $n^{d}$ of Riemann integration. 
+
+\section*{Lecture 9: Oct 10}
+\subsection*{Importance Sampling}
+\textbf{The Curse of Dimensionality:} recall that 
+\[\big \vert \hat v_n - v\big\vert \leq \sqrt{\Var H(\vec X_1)} \cdot \sqrt{\frac{2\log(\log n)}{n}}\]
+
+When $d$ is large, $\Var H(\vec X_1)$ is large so the error is large.
+
+
+\textbf{Importance Sampling:}
+\begin{align*}
+    v = \int H(\vec x) \cdot f(\vec x)\; d\vec x &= \int \frac{H(\vec x) \cdot f(\vec x)}{g(\vec x)} \cdot g(\vec x)\; dx\\
+    &= \E[\frac{H(\vec x) \cdot f(\vec x)}{g(\vec x)}]\\ 
+    &\approx \frac{1}{n} \sum_{i=1}^n \frac{H(\vec X_i) \cdot f(\vec X_i)}{g(\vec X_i)} 
+\end{align*}
+where $\vec X_1, \vec X_2, \, \dots,\, \vec X_n \sim g(\vec x)$, another PDF carefully chosen to minimize variance. 
+
+So, defining the estimator 
+\[\hat v_N = \frac{1}{n}\sum_{i=1}^n \frac{H(\vec X_i) \cdot f(\vec X_i)}{g(\vec X_i)}\approx v\]
+
+We have a new, smaller variance term given a ``properly -chosen'' $g$ such that 
+\[e_n = \big\vert \hat v_n - v\big\vert \leq \sqrt{\Var \frac{H(\vec X_1) \cdot f(\vec X_1)}{g(\vec X_1)}} \cdot \sqrt{\frac{2 \log(\log n)}{n}}\]
+
+\textbf{Remark:} Here, ``properly chosen'' means that
+\begin{enumerate}
+    \item We know how to generate $X_1, X_2, \, \dots,\, X_n \overset{iid}{\sim} g$
+    \item $g(\vec x) = 0 \implies H(\vec x) \cdot g(\vec x) = 0$
+    \item \[\frac{H(\vec x) \cdot f(\vec x)}{g(\vec x)} \approx \text{constant}\]
+\end{enumerate}
+
+Ideally, 
+\[\frac{H(\vec x) \cdot f(\vec x)}{g(\vec x)} = c \implies \Var \frac{H(\vec x) \cdot f(\vec x)}{g(\vec x)} = \Var c = 0\]
+But this is unrealistic because 
+\[I = \int g(\vec x) \; dx = \frac{1}{c} \int H(\vec x) \cdot g(\vec x) \; dx \implies g6*(\vec x) = \frac{H(\vec x) \cdot f(\vec x)}{\int H(\vec x) \cdot f(\vec x)\; dx}\]
+where the denominator is exactly what we want to calculate in the first place; if we knew it, we would be done.  
+
+In applications, we focus on a function family $\mathfrak{F}$ of PDFs and choose the element that is ``most similar'' to the ideal $g^*$. This is chosen by minimizing the difference across the family of functions (either by the Kullback-Leibler Divergence or Wasserstein Metric)
+\[\arg\min_{f\in \mathfrak{F}} D_{KL}(g^* \big\vert \big\vert f) \quad \text{or} \quad \arg\min_{f \in \mathfrak{F}}W(g^*, f)\]
+
+\section*{Lecture 10: Oct 12}
+Above, we were able to generate $d$-dimensional random vectors for Monte Carlo integration only when we had a PDF $f$ which could be factored into 1-dimensional PDFs 
+\[f(x_1, x_2, \dots,\, x_n) = \prod_{j=1}^d f_j(x_j)\]
+
+\textbf{What if we do not have the factorization?}
+
+\subsection*{Example: $d = 2$}
+\[(X^{(1)}, X^{(2)}) = f(x_1, x_2) = \frac{f(x_1, x_2)}{\int f(x_1, x_2)\; dx_2} \cdot \int f(x_1, x_2)\; dx\]
+with the PDF of $X^{(1)}$ defined as 
+\[f_1(x_1) := \int f(x_1, x_2)\; dx_2\]
+and 
+\[f_{2\; | \;1}(x_2 \; | \; x_1) := \frac{f(x_1, x_2)}{f_1(x_1)}\]
+is the conditional PDF of $X^{(2)}$ given $X^{(1)} = x_1$
+
+Then, we can generate a 2-d random vector 
+\[(X^{(1)}, X^{(2)}) \sim f(x_1, x_2) = f_{2|1}(x_2 \; | \;x_1) \cdot f_1(x_1)\]
+where $f(x_1, x_2) = f_{2 |1}(x_2 \; | \;x_1) \cdot f_1(x_1)$ is \textbf{Baye's Law}
+
+\textbf{The Algorithm:}
+\begin{enumerate}
+    \item Generate $X^{(1)} \sim f_1$ (using MCG and inverse CDF)
+    \item Generate $X^{(2)} \sim f_{2 | 1}(x_2 \; | \; X^{(1)})$
+    \item Output: $\vec X = (X^{(1), X^{(2)}}) \sim f(x_1, x_2)$
+\end{enumerate}
+
+\emph{A Problem:} In step 1, we generate 
+\[X^{(1)} \sim f_1(x_1) = \int_{-\infty}^{\infty} f(x_1, x_2)\; dx_2\]
+which may be computationally expensive because we need to compute this integral for \emph{every} $x_1$ (which could be infinite!)
+
+\subsection*{Example: $d = 100$}
+Using the same process, 
+\[X^{(1)} \sim f_1(x_1) = \underbrace{\int_{-\infty}^{\infty} \int_{-\infty}^{\infty} \dots \int_{-\infty}^{\infty}}_{\text{99 integrals}} f(x_1, x_2, \dots,\, x_{100})\; dx_2\, dx_3\, \dots\, dx_{100}\]
+which again needs to be calculated for potentially infinitely many $x_1$!
+
+Then in step 2, this would all need to be repeated with 98 infinite integrals!
+
+Clearly, this is a terrible way to generate random vectors if your goal is to solve a single integral.
+
+\textbf{Conclusion:} Generating a high-dimensional RV from a given high-dimensional distribution is infeasible in applications. We need a new approach. 
+
+\subsection*{Conditional Probability}
+\textbf{Definition:} Let $(\Omega, \P)$ be a probability space. $A \subseteq \Omega$ and $\subseteq \Omega$ are two events.
+\begin{enumerate}
+    \item If $\P(B) > 0$, then the conditional probability of $A$ given $B$ is 
+    \[\P(A \; | \; B) := \frac{\P(A \cap B)}{\P(B)}\]
+    \item If $\P(B) = 0$ then $\P(A \; | \; B)$ is not defined (in undergrad-level math)
+\end{enumerate}
+
+Furthermore, we define a map 
+\[\tilde \P: \{A : A \subseteq \Omega\} \to \R\]
+
+\textbf{Claim:} $\tilde \P(A) = \P(A \; | \; B)$ is a probability on $\Omega$
+
+\emph{Proof:} HW in APMA 1655.
+
+\textbf{Law of Total Probability:} Let $(\Omega, \P)$ be a probability space with partition $\{B_1, B_2, \dots,\, B_n\}$. If $\P(B_i) > 0$ for $i = 1,2, \dots,\, n$ then 
+\[\P(A) = \sum_{i=1}^n \P(A \; | \; B_i)\cdot \P(B_i) \quad \forall A \subseteq \Omega\]
+
+\subsection*{Markov Chains}
+Assume the \textbf{state space} $\mathfrak{X}$ is a discrete subset of $\R^d$. $\{X_n\}_{n=1}^\infty$ is a sequence of RV $X_n: \Omega \to \mathfrak{X}$
+
+\textbf{Definition:}
+\begin{enumerate}
+    \item The sequence $\{X_n\}_{n=1}^\infty$ defined above is a Markov chain if 
+    \[\P\left(X_{n+1} = y \; \bigg\vert \; X_n = x_1, X_{n-1} = \xi_{n-1}, \dots, X_0 = \xi_0\right) = \P(X_{n+1} = y \; | \; X_n = x)\]
+    Heuristically, the sequence is a Markov Chain if the future state depends only on the present state and not any past state for all $n = 0, 1, 2, \dots$, all $y \in \mathfrak{X}$ and all $x_1, \xi_{n-1}, \dots,\, \xi_0$ such that
+    \[\P(X_n = x,  X_{n-1} = \xi_{n-1}, \dots, X_0 = \xi_0) > 0\]
+
+    \item Furthermore, if there exists a function $p(x, y): \mfX x \mfX \to [0, 1]$ such that
+    \[\P(X_{n+1} = y \; | \; X_n = x) = p(x, y)\]
+    (the conditional probability does not depend on $n$)
+    then the Markov Chain $\{X_n\}_{n=0}^\infty$ is called a \textbf{homogeneous Markov Chain}
+
+    The function $p$ is called the \textbf{transition probability} of the HMC. Heuristically, it is the probability of moving from $x$ to $y$.
+\end{enumerate}
+
+If $\{X_n\}_{n=0}^\infty$ is a HMC, we have a function $p$. Further, $X_0: \Omega \mfX$, whose codomain is a discrete set. We note that $X_0$ then has a probability mass function (PMF) 
+\[\mu(x):= \P(X_0 = x) \quad \forall x \in \mfX\]
+
+Together, the functions $\mu$ and $p$ contain all of the information of the distribution of the MC:
+\[\P(X_0 = x_0, X_1 = x_1, \dots,\, X_n = x_n) = \mu(x_0) \prod_{i=0}^{n-1} p(x_i, x_{i+1})\]
+
+\subsection*{Example}
+Let $\xi_1, \xi_2, \dots,\, \xi_n$ be iid $\Z^d$-valued RVs on $(\Omega, \P)$, i.e. $\xi: \Omega \to \Z^d = \Z \times \dots \times \Z$
+
+We define 
+\[X_n(\omega) = \begin{cases}
+    x_0 \qquad {n=0}\\
+    x_0 + \sum_{i=1}^n \xi_i(\omega) \quad n \geq 1
+\end{cases}\]
+
+Then, $\{X_n\}_{n=0}^\infty$ is the \textbf{random walk} from $x_0$. 
+
+\section*{Lecture 11: Oct 17}
+\subsection*{Overview of the Monte Carlo Markov Chain} 
+
+\textbf{Ergodic Theorem:} Suppose $\{X_n\}_{n=0}^\infty$ is a homogenenous Markov Chain satisfying 
+\begin{enumerate}
+    \item it is ``recurrent''
+    \item it is ``irreducible''
+    \item it is ``aperiodic''
+    \item it has a ``stationary distribution'' $\pi$ which is a PMF on $\mfX$
+\end{enumerate}
+Then we have 
+\begin{enumerate}
+    \item $X_n \dot \sim \pi$ when $n$ is large
+    \item For any function $f$ such that $E[f(X)]$ exists (with $X \sim \pi$), then 
+    \[\P\left(\left\{\omega \in \Omega: \lim_{n\to\infty} \frac{1}{n}\sum_{i=1}^n f(X_i(\omega)) = \E[f(X)]\right\}\right) = 1\]
+\end{enumerate}
+
+\textbf{Remarks:}
+\begin{itemize}
+    \item The first result helps us generate RVs from $\pi$ (approximately)
+    \item The second result looks like the LLN. The difference lies in the fact that the LLN requires the random variables $X_i$ are iid. The ergodic theorem only requires they come from the same Markov Chain. Thus, we can estimate $\E[f(X)]$ ($X \sim \pi)$ with the estimator 
+    \[\hat v_n = \frac{1}{n}\sum_{i=1}^n f(X_i)\]
+\end{itemize}
+
+\subsection*{Recurrence and Transience}
+Suppose we have a homogenenous Markov Chain $\{X_n\}_{n=0}^\infty$ with $X_N: \Omega \to \mfX$ for all $n$.
+
+\begin{center}
+    \color{blue}
+    \begin{tikzpicture}
+        \node (X0) at (1, 4) {$X_0(\omega)$};
+        \node (X1) at (3, 3) {$X_1(\omega)$};
+        \node (X2) at (2, 2) {$X_2(\omega)$};
+        \node (X3) at (3, 1) {$X_3(\omega)$};
+    
+        \draw (0, 0) rectangle (5, 5) node[xshift=0.5cm, yshift=-2.5cm]{$\mfX$}; 
+        \draw[->] (X0) -- (X1);
+        \draw[->] (X1) -- (X2);
+        \draw[->] (X2) -- (X3);
+    \end{tikzpicture}
+\end{center}
+
+We call the subscript $n$ the ``time point''. 
+
+With $y \in \mfX$ fixed, 
+\[T_y(\omega) := \min\{n > 0: X_n(\omega) = y\}\]
+is ``the time at which the Markov chain first visits $y$''
+
+\[T_y(\omega) = +\infty \iff \{X_n\}_{n=0}^\infty \text{ will never visit $t$}\]
+
+Then we define 
+\[\rho_{xy} = \P(T_y < +\infty \; | \; X_0 = x)\]
+
+\textbf{Definition:} Let $\{X_n\}_{n=0}^\infty$ be a HMC with state space $\mfX$. 
+\begin{enumerate}
+    \item For $y \in \mfX$, the state $y$ is called \textbf{recurrent} if $\rho_{yy} = 1$
+    \item If $y$ is not recurrent, then it is \textbf{transient}
+\end{enumerate}
+
+\emph{Interpretation:} if $y$ is recurrent and the MC starts from $y$, the MC will return to $y$ with probability $1$
+
+\subsection*{Example: Simple Random Walks}
+\textbf{Example 1:} 1-dimensional SRW 
+
+Fix a point $x_0 \in \Z$. 
+\[\xi_1, \xi_2, \dots,\, \xi_n \overset{iid}{\sim} \text{Unif}(\{-1, 1\}) \implies \P(\xi_i = 1) = \P(\xi_i = -1) = 1\]
+Then 
+\[X_n(\omega) = \begin{cases}
+    x_0 \qquad\qquad \qquad\qquad\!  n = 0\\
+    x_0 + \sum_{i=1}^n \xi_i(\omega) \qquad n = 1, 2, \dots
+\end{cases} \implies X_{n+1} = X_n + \xi_{n+1}\]
+
+\emph{Claim:} $\{X_n\}_{n=0}^\infty$ is a markov chain. 
+
+\emph{Proof:} a sequence of RVs is a MC if 
+\[\P(X_{n+1} = y \; | \; X_n = x, X_{n-1} = \xi_{n-1}, \dots, X_0 = \xi_0) = \P(X_{n+1}= y\; | \; X_n = x)\]
+
+First we take the LHS. By the definition of conditional probability, 
+\begin{align*}
+    \P(X_{n+1} = y \; | \; X_n = x, X_{n-1} = \xi_{n-1}, \dots, X_0 = \xi_0) &= \frac{\P(X_{n+1} = y, X_n = x, X_{n-1} = \xi_{n-1}, \dots, X_0 = \xi_0)}{\P(X_n = x, X_{n-1} = \xi_{n-1}, \dots, X_0 = \xi_0)}
+\end{align*}
+However, 
+\[X_{n+1} = X_n + \xi_{n+1} \implies \xi_{n+1} = X_{n+1} - X_n = y - x\]
+so 
+\[P(X_{n+1} = y) = \P(\xi_{n+1} = y - x)\]
+Further, since $\xi_n$ is independent of $X_n$ and all $X_m$ with $m \leq n$, we can separate out the probabilities:
+\begin{align*}
+    \frac{\P(X_{n+1} = y, X_n = x, X_{n-1} = \xi_{n-1}, \dots, X_0 = \xi_0)}{\P(X_n = x, X_{n-1} = \xi_{n-1}, \dots, X_0 = \xi_0)} &= \frac{\P(\xi_{n+1} = y -x, X_n = x, X_{n-1} = \xi_{n-1}, \dots, X_0 = \xi_0)}{\P(X_n = x, X_{n-1} = \xi_{n-1}, \dots, X_0 = \xi_0)}\\
+    &= \frac{\P(\xi_{n+1} = y-x) \cdot \P(X_n = x, X_{n-1} = \xi_{n-1}, \dots, X_0 = \xi_0)}{\P(X_n = x, X_{n-1} = \xi_{n-1}, \dots, X_0 = \xi_0)} \\
+    &= \P(\xi_{n+1} = y-x)
+\end{align*}
+
+Now for the RHS, 
+\begin{align*}
+    \P(X_{n+1} = y \; | \; X_n = x) &= \frac{\P(X_{n+1} = y, X_n = x)}{\P(X_n = x)}\\
+    &= \frac{\P(\xi_{n+1} = y -x, X_n = x)}{\P(X_n = x)}\\
+    &= \frac{\P(\xi_{n+1} = y -x, X_n = x)}{\P(X_n = x)}\\
+    &= \P(\xi_{n+1} = y -x)
+\end{align*}
+
+Thus LHS = RHS and $\{X_n\}_{n=0}^\infty$ is a markov chain. $\qed$
+
+Further, it is recurrent. 
+
+\textbf{Example 2:} In a 2-dim SRW, $\rho_{\vec 0, \vec 0 } = 1$ ($\vec 0$ is recurrent)
+
+\textbf{Example 3:} In a d-dim SRW ($d \geq 3$), $\rho_{\vec 0, \vec 0} = \P(T_{\vec 0} < +\infty \; | \; X_0 = \vec 0) < 1$ 
+\end{document} 
