@@ -1,0 +1,51 @@
+This is BibTeX, Version 0.99d
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: HW 10.aux
+Reallocating 'name_of_file' (item size: 1) to 9 items.
+The style file: abbrvnat.bst
+Reallocating 'name_of_file' (item size: 1) to 7 items.
+Database file #1: sample.bib
+Warning--empty journal in smola2001regularized
+Warning--empty journal in wu2018think
+You've used 12 entries,
+            2773 wiz_defined-function locations,
+            671 strings with 6668 characters,
+and the built_in function-call counts, 5590 in all, are:
+= -- 498
+> -- 330
+< -- 8
++ -- 111
+- -- 99
+* -- 465
+:= -- 869
+add.period$ -- 36
+call.type$ -- 12
+change.case$ -- 67
+chr.to.int$ -- 12
+cite$ -- 26
+duplicate$ -- 241
+empty$ -- 451
+format.name$ -- 125
+if$ -- 1149
+int.to.chr$ -- 1
+int.to.str$ -- 1
+missing$ -- 13
+newline$ -- 68
+num.names$ -- 48
+pop$ -- 126
+preamble$ -- 1
+purify$ -- 56
+quote$ -- 0
+skip$ -- 192
+stack$ -- 0
+substring$ -- 236
+swap$ -- 10
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 127
+warning$ -- 2
+while$ -- 52
+width$ -- 0
+write$ -- 158
+(There were 2 warnings)

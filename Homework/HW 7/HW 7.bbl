@@ -1,0 +1,49 @@
+\begin{thebibliography}{7}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Athreya et~al.(1996)Athreya, Doss, and
+  Sethuraman]{athreya1996convergence}
+K.~B. Athreya, H.~Doss, and J.~Sethuraman.
+\newblock On the convergence of the markov chain simulation method.
+\newblock \emph{The Annals of Statistics}, 24\penalty0 (1):\penalty0 69--100,
+  1996.
+
+\bibitem[Durrett(2010)]{durrett2019probability}
+R.~Durrett.
+\newblock \emph{Probability: theory and examples, 4th Edition}, volume~49.
+\newblock Cambridge university press, 2010.
+
+\bibitem[Hastings(1970)]{hastings1970monte}
+W.~K. Hastings.
+\newblock Monte carlo sampling methods using markov chains and their
+  applications.
+\newblock 1970.
+
+\bibitem[Klenke(2020)]{klenke2013probability}
+A.~Klenke.
+\newblock \emph{Probability theory: a comprehensive course, 3rd Edition}.
+\newblock Springer Science \& Business Media, 2020.
+
+\bibitem[Metropolis and Ulam(1949)]{metropolis1949monte}
+N.~Metropolis and S.~Ulam.
+\newblock The monte carlo method.
+\newblock \emph{Journal of the American statistical association}, 44\penalty0
+  (247):\penalty0 335--341, 1949.
+
+\bibitem[Metropolis et~al.(1953)Metropolis, Rosenbluth, Rosenbluth, Teller, and
+  Teller]{metropolis1953equation}
+N.~Metropolis, A.~W. Rosenbluth, M.~N. Rosenbluth, A.~H. Teller, and E.~Teller.
+\newblock Equation of state calculations by fast computing machines.
+\newblock \emph{The journal of chemical physics}, 21\penalty0 (6):\penalty0
+  1087--1092, 1953.
+
+\bibitem[Tierney(1994)]{tierney1994markov}
+L.~Tierney.
+\newblock Markov chains for exploring posterior distributions.
+\newblock \emph{the Annals of Statistics}, pages 1701--1728, 1994.
+
+\end{thebibliography}

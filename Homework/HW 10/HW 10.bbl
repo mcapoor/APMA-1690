@@ -1,0 +1,83 @@
+\begin{thebibliography}{12}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Belkin and Niyogi(2001)]{belkin2001laplacian}
+M.~Belkin and P.~Niyogi.
+\newblock Laplacian eigenmaps and spectral techniques for embedding and
+  clustering.
+\newblock \emph{Advances in neural information processing systems}, 14, 2001.
+
+\bibitem[Coifman and Lafon(2006)]{coifman2006diffusion}
+R.~R. Coifman and S.~Lafon.
+\newblock Diffusion maps.
+\newblock \emph{Applied and computational harmonic analysis}, 21\penalty0
+  (1):\penalty0 5--30, 2006.
+
+\bibitem[Coifman et~al.(2005)Coifman, Lafon, Lee, Maggioni, Nadler, Warner, and
+  Zucker]{coifman2005geometric}
+R.~R. Coifman, S.~Lafon, A.~B. Lee, M.~Maggioni, B.~Nadler, F.~Warner, and
+  S.~W. Zucker.
+\newblock Geometric diffusions as a tool for harmonic analysis and structure
+  definition of data: Diffusion maps.
+\newblock \emph{Proceedings of the national academy of sciences}, 102\penalty0
+  (21):\penalty0 7426--7431, 2005.
+
+\bibitem[Fefferman et~al.(2016)Fefferman, Mitter, and
+  Narayanan]{fefferman2016testing}
+C.~Fefferman, S.~Mitter, and H.~Narayanan.
+\newblock Testing the manifold hypothesis.
+\newblock \emph{Journal of the American Mathematical Society}, 29\penalty0
+  (4):\penalty0 983--1049, 2016.
+
+\bibitem[Hastie and Stuetzle(1989)]{hastie1989principal}
+T.~Hastie and W.~Stuetzle.
+\newblock Principal curves.
+\newblock \emph{Journal of the American Statistical Association}, 84\penalty0
+  (406):\penalty0 502--516, 1989.
+
+\bibitem[Meng and Eloyan(2021)]{meng2021principal}
+K.~Meng and A.~Eloyan.
+\newblock Principal manifold estimation via model complexity selection.
+\newblock \emph{Journal of the Royal Statistical Society: Series B (Statistical
+  Methodology)}, 83\penalty0 (2):\penalty0 369--394, 2021.
+
+\bibitem[Pearson(1901)]{pearson1901liii}
+K.~Pearson.
+\newblock Liii. on lines and planes of closest fit to systems of points in
+  space.
+\newblock \emph{The London, Edinburgh, and Dublin philosophical magazine and
+  journal of science}, 2\penalty0 (11):\penalty0 559--572, 1901.
+
+\bibitem[Roweis and Saul(2000)]{roweis2000nonlinear}
+S.~T. Roweis and L.~K. Saul.
+\newblock Nonlinear dimensionality reduction by locally linear embedding.
+\newblock \emph{science}, 290\penalty0 (5500):\penalty0 2323--2326, 2000.
+
+\bibitem[Seber and Lee(2012)]{seber2012linear}
+G.~A. Seber and A.~J. Lee.
+\newblock \emph{Linear regression analysis}.
+\newblock John Wiley \& Sons, 2012.
+
+\bibitem[Smola et~al.(2001)Smola, Mika, Sch{\"o}lkopf, Williamson,
+  et~al.]{smola2001regularized}
+A.~Smola, S.~Mika, B.~Sch{\"o}lkopf, R.~Williamson, et~al.
+\newblock Regularized principal manifolds.
+\newblock 2001.
+
+\bibitem[Tenenbaum et~al.(2000)Tenenbaum, Silva, and
+  Langford]{tenenbaum2000global}
+J.~B. Tenenbaum, V.~d. Silva, and J.~C. Langford.
+\newblock A global geometric framework for nonlinear dimensionality reduction.
+\newblock \emph{science}, 290\penalty0 (5500):\penalty0 2319--2323, 2000.
+
+\bibitem[Wu and Wu(2018)]{wu2018think}
+H.-T. Wu and N.~Wu.
+\newblock Think globally, fit locally under the manifold setup: Asymptotic
+  analysis of locally linear embedding.
+\newblock 2018.
+
+\end{thebibliography}

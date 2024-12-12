@@ -1,0 +1,31 @@
+\begin{thebibliography}{4}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Dvoretzky et~al.(1956)Dvoretzky, Kiefer, and
+  Wolfowitz]{dvoretzky1956asymptotic}
+A.~Dvoretzky, J.~Kiefer, and J.~Wolfowitz.
+\newblock Asymptotic minimax character of the sample distribution function and
+  of the classical multinomial estimator.
+\newblock \emph{The Annals of Mathematical Statistics}, pages 642--669, 1956.
+
+\bibitem[Etemadi(1981)]{etemadi1981elementary}
+N.~Etemadi.
+\newblock An elementary proof of the strong law of large numbers.
+\newblock \emph{Zeitschrift f{\"u}r Wahrscheinlichkeitstheorie und verwandte
+  Gebiete}, 55\penalty0 (1):\penalty0 119--122, 1981.
+
+\bibitem[Klenke(2020)]{klenke2013probability}
+A.~Klenke.
+\newblock \emph{Probability theory: a comprehensive course, 3rd Edition}.
+\newblock Springer Science \& Business Media, 2020.
+
+\bibitem[Shao(2003)]{shao2003mathematical}
+J.~Shao.
+\newblock \emph{Mathematical statistics}.
+\newblock Springer Science \& Business Media, 2003.
+
+\end{thebibliography}

@@ -1,0 +1,50 @@
+This is BibTeX, Version 0.99d
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: HW 7.aux
+Reallocating 'name_of_file' (item size: 1) to 9 items.
+The style file: abbrvnat.bst
+Reallocating 'name_of_file' (item size: 1) to 7 items.
+Database file #1: sample.bib
+Warning--empty journal in hastings1970monte
+You've used 7 entries,
+            2773 wiz_defined-function locations,
+            641 strings with 5677 characters,
+and the built_in function-call counts, 3022 in all, are:
+= -- 268
+> -- 139
+< -- 7
++ -- 49
+- -- 42
+* -- 224
+:= -- 464
+add.period$ -- 21
+call.type$ -- 7
+change.case$ -- 33
+chr.to.int$ -- 7
+cite$ -- 15
+duplicate$ -- 152
+empty$ -- 266
+format.name$ -- 51
+if$ -- 631
+int.to.chr$ -- 1
+int.to.str$ -- 1
+missing$ -- 9
+newline$ -- 43
+num.names$ -- 28
+pop$ -- 75
+preamble$ -- 1
+purify$ -- 28
+quote$ -- 0
+skip$ -- 115
+stack$ -- 0
+substring$ -- 132
+swap$ -- 18
+text.length$ -- 2
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 67
+warning$ -- 1
+while$ -- 30
+width$ -- 0
+write$ -- 95
+(There was 1 warning)

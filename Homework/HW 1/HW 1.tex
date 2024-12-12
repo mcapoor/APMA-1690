@@ -1,0 +1,465 @@
+\documentclass[11pt,letterpaper, leqno]{article}
+\usepackage{latexsym}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\topmargin -0.25in
+\textheight 8.5in
+\oddsidemargin 0.0in
+\textwidth 6.5in
+
+\RequirePackage{amsthm,amsmath,amsfonts,amssymb}
+%\RequirePackage[numbers]{natbib}
+\RequirePackage[authoryear]{natbib}%% uncomment this for author-year citations
+\RequirePackage[colorlinks,citecolor=blue,urlcolor=blue]{hyperref}%% uncomment this for coloring bibliography citations and linked URLs
+\RequirePackage{graphicx}%% uncomment this for including figures
+
+\usepackage{tikz}
+\usepackage{graphicx}
+\usepackage{natbib}
+\usepackage{authblk}
+\usepackage[english]{babel}
+\usepackage{mathtools}
+\usepackage{bbm}
+
+\bibliographystyle{abbrvnat}
+\setcitestyle{authoryear,open={(},close={)}}
+
+% For the algorithm table
+\usepackage{algorithm,algcompatible,amsmath}
+\DeclareMathOperator*{\argmax}{\arg\!\max}
+\DeclareMathOperator*{\argmin}{\arg\!\min}
+% https://tex.stackexchange.com/q/83169/5764
+\algnewcommand\INPUT{\item[\textbf{Input:}]}%
+\algnewcommand\OUTPUT{\item[\textbf{Output:}]}%
+%
+
+% the settings of tikz is used for the optimization of the graphs  
+\usetikzlibrary{shapes, arrows, calc, arrows.meta, fit, positioning} % these are the parameters passed to the library to create the node graphs  
+\tikzset{  
+    -Latex,auto,node distance =1.5 cm and 1.3 cm, thick,% node distance is the distance between one node to other, where 1.5cm is the length of the edge between the nodes  
+    state/.style ={ellipse, draw, minimum width = 0.9 cm}, % the minimum width is the width of the ellipse, which is the size of the shape of vertex in the node graph  
+    point/.style = {circle, draw, inner sep=0.18cm, fill, node contents={}},  
+    bidirected/.style={Latex-Latex,dashed}, % it is the edge having two directions  
+    el/.style = {inner sep=2.5pt, align=right, sloped}  
+}  
+
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{acknowledgement}[theorem]{Acknowledgement}
+%\newtheorem{algorithm}[theorem]{Algorithm}
+\newtheorem{axiom}[theorem]{Axiom}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{remark}{Remark}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{conclusion}[theorem]{Conclusion}
+\newtheorem{condition}[theorem]{Condition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{corollary}{Corollary}
+\newtheorem{criterion}[theorem]{Criterion}
+\newtheorem{definition}{Definition}
+\newtheorem{example}{Example}
+\newtheorem{exercise}[theorem]{Exercise}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{lem}{Lemma}[section]
+\newtheorem{prop}{Proposition}[section]
+\newtheorem{defn}{Definition}[section]
+\newtheorem{ex}{Example}[section]
+\newtheorem{cor}{Corollary}[section]
+\newtheorem{rem}{Remark}[section]
+\newtheorem{rems}{Remarks}[section]
+\numberwithin{equation}{section} 
+\numberwithin{theorem}{section}
+\numberwithin{lemma}{section} 
+\numberwithin{corollary}{section}
+\numberwithin{definition}{section}
+\numberwithin{proposition}{section} 
+\numberwithin{remark}{section}
+\numberwithin{example}{section}
+\newtheorem{assumption}{Assumption}
+\DeclareMathOperator\supp{supp}
+
+%\newcommand{\ex}{{\bf\sf E}}            %% expectation
+\newcommand{\bfp}{{\bf P}}
+\newcommand{\bfr}{{\bf R}}
+\newcommand{\Var}{{\rm Var}}            %% 
+\newcommand{\Cov}{{\rm Cov}}            %% 
+\newcommand{\calc}{{\cal C}}            %%
+\newcommand{\cald}{{\cal D}} 
+\newcommand{\calf}{{\cal F}}            %%
+\newcommand{\call}{{\cal L}}            
+\newcommand{\al}{\alpha}                %%
+\newcommand{\bt}{\beta}                %%
+\newcommand{\ga}{\gamma}                %% abbreviated
+\newcommand{\dt}{\delta}                %% greek letters
+\newcommand{\la}{\lambda}               %%
+\newcommand{\ep}{\epsilon}              %%
+\newcommand{\sig}{\sigma}               %%
+\newcommand{\tri}{\triangle}
+\newcommand{\om}{\omega}                %%
+\newcommand{\ra}{\rightarrow}           %%
+\newcommand{\lra}{\longrightarrow}
+\newcommand{\Ra}{\Rightarrow}           %% arrows
+\newcommand{\subs}{\subseteq}           %% subset or equal to
+\newcommand{\eqdef}{\stackrel{\triangle}{=}}
+\newcommand{\hY}{\hat{Y}}
+\newcommand{\hp}{\hat{p}}
+\newcommand{\hX}{\hat{X}}
+\newcommand{\hy}{\hat{y}}
+\newcommand{\hQ}{\hat{Q}}
+\newcommand{\Zh}{\hat{Z}}
+\newcommand{\hla}{\hat{\lambda}}
+\newcommand{\starti}{\parindent0pt\it}  %% start an italic line
+\newcommand{\startb}{\parindent0pt\bf}  %% start a boldface line
+\newcommand{\tril}{\triangle^-}
+\newcommand{\trir}{\triangle^+}
+\newcommand{\trilr}{\triangle^{\pm}}
+\newcommand{\realR}{{{\rm I}\;\!\!\!{\rm R}}}
+\newcommand{\probP}{{{\rm I}\;\!\!\!{\rm P}}}
+\newcommand{\filtF}{{{\rm I}\;\!\!\!{\rm F}}}
+\newcommand{\expeE}{{{\rm I}\;\!\!\!{\rm E}}}
+\newcommand{\noin}{{\noindent}}
+\newcommand{\doty}{{\dot{y}}}
+\newcommand{\doth}{{\dot{h}}}
+\newcommand{\dotx}{{\dot{x}}}
+\newcommand{\dotu}{{\dot{u}}}
+\newcommand{\dotf}{{\dot{f}}}
+\newcommand{\dotg}{{\dot{g}}}
+\newcommand{\ddoty}{{\ddot{y}}}
+\newcommand{\ddoth}{{\ddot{h}}}
+\newcommand{\ddotx}{{\ddot{x}}}
+\newcommand{\ddotf}{{\ddot{f}}}
+%\newcommand{\Var}{{\mbox{Var}}}
+%\newcommand{\Cov}{{\mbox{Cov}}}
+\newcommand{\T}{\intercal}
+
+\renewcommand{\Var}{\text{Var}}
+\renewcommand{\P}{\mathbb{P}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Z}{\mathbb{Z}}
+\renewcommand{\qed}{\quad \blacksquare}
+\newcommand{\ind}{\mathbbm{1}}
+
+\begin{document}
+\begin{center}
+{\bf \large APMA1690: ~~Homework \# 1 ~~~(Due by 11 pm Sept 21)}
+\end{center}
+ 
+\medskip
+
+\section{Review}
+
+I would suggest you read the Review section before going to the problem set. - Mike
+
+\subsection{Three Building Blocks of Probability Theory}
+
+\subsubsection{Sample Spaces}
+
+\begin{definition}
+\begin{enumerate}
+        \item The \textbf{sample space} of an experiment is the collection of all possible outcomes of the experiment. A sample space is usually denoted by $\Omega$.
+        
+        \item Any subset $A$ of $\Omega$ (allowed to be empty $\emptyset$) is called an \textbf{event}, and $\emptyset$ is called the/an \textbf{impossible event}. The sample space $\Omega$, as a subset of itself, is called the \textbf{inevitable event}.
+    \end{enumerate}
+\end{definition}
+
+\subsubsection{Random Variables}
+
+\begin{definition}\label{def: random variables}
+    Let $\Omega$ be a sample space and $\mathbb{R}^d$ denote $d$-dimensional space. 
+    \begin{itemize}
+        \item Any map $X: \Omega \rightarrow \mathbb{R}^d,\, \omega\mapsto X(\omega)$ is called a ($\mathbb{R}^d$-valued) \textbf{random variable}; when $d\ge 2$, the $\mathbb{R}^d$-valued random variable is also referred to as a \textbf{random vector}.
+        
+        \item If there exists a fixed $x\in\mathbb{R}^d$ such that $X(\omega)=x$ for all $\omega\in\Omega$, i.e., $X(\omega)$ is a constant function of $\omega$, we call $X$ \textbf{deterministic}. 
+        
+        \item If random variable $X$ is not deterministic, we call $X$ \textbf{truly random}.
+    \end{itemize}
+\end{definition}
+
+\subsubsection{Probabilities}
+
+\begin{definition}\label{def: probability space axioms}
+Let $\Omega$ be a sample space. Suppose $\mathbb{P}$ is a real-valued function of subsets of $\Omega$, i.e.,
+\begin{align*}
+    \mathbb{P}:\ \ & \{\mbox{subsets of }\Omega\} \rightarrow \mathbb{R},\\ 
+    & A \mapsto \mathbb{P}(A).
+\end{align*}
+If $\mathbb{P}$ satisfies the following three axioms, $\mathbb{P}$ is called a \textbf{probability}, and the pair $(\Omega,\mathbb{P})$ is called a \textbf{probability space}
+\begin{enumerate}
+    \item $\mathbb{P}(A)\ge0$ for any subset $A \subseteq \Omega$;
+    
+    \item $\mathbb{P}(\Omega)=1$;
+    
+    \item For any infinitely long sequence of \href{https://en.wikipedia.org/wiki/Mutual_exclusivity}{disjoint} subsets $\{A_i\}_{i=1}^\infty$, i.e., $A_i\cap A_j =\emptyset$ if $i\ne j$, we have 
+    \begin{align*}
+        \mathbb{P}\left(\bigcup_{i=1}^\infty A_i \right)=\sum_{i=1}^\infty \mathbb{P}(A_i).
+    \end{align*}
+\end{enumerate}
+\end{definition}
+
+
+\subsection{Properties of Probabilities}
+
+\begin{theorem}\label{thm: properties directly follows from the def of prob spaces}
+    Let $(\Omega, \mathbb{P})$ be a probability space. Then, we have the following
+    \begin{enumerate}
+        \item $\mathbb{P}(\emptyset)=0$, i.e., the probability of the impossible event is zero;
+        
+        \item if two events $E_1$ and $E_2$ satisfy $E_1\cap E_2=\emptyset$, we have $\mathbb{P}(E_1\cup E_2)=\mathbb{P}(E_1)+ \mathbb{P}(E_2)$;
+        
+        \item suppose $A,B\subseteq\Omega$. If $A\subseteq B$, then $\mathbb{P}(A)\le \mathbb{P}(B)$;
+        
+        \item $0\le \mathbb{P}(A) \le 1$ for any subsets $A \subseteq \Omega$; 
+        
+        \item for any $A,B\subseteq\Omega$, we have $\mathbb{P}(A\cup B)=\mathbb{P}(A)+\mathbb{P}(B)-\mathbb{P}(A\cap B)$;
+        
+        \item for any sequence of subsets $\{A_n\}_{n=1}^\infty$, we have $\mathbb{P}(\bigcup_{n=1}^\infty A_n)\le\sum_{n=1}^\infty\mathbb{P}(A_n)$.
+    \end{enumerate}
+\end{theorem}
+
+\begin{enumerate}
+    \item Let $A_1=\Omega$ and $A_n=\emptyset$ for all $n\ge 2$. Then, $\{A_n\}_{n=1}^\infty$ is a sequence of disjoint sets. We have
+    \begin{align*}
+        A_1=\Omega=\Omega\cup\emptyset\cup\emptyset\cdots\cup\emptyset\cup\cdots=\bigcup_{n=1}^\infty A_n,
+    \end{align*}
+    which implies $\mathbb{P}(A_1)=\mathbb{P}(\bigcup_{n=1}^\infty A_n)=\sum_{n=1}^\infty \mathbb{P}(A_n)=\mathbb{P}(A_1)+\mathbb{P}(\emptyset)+\mathbb{P}(\emptyset)+\cdots+\mathbb{P}(\emptyset)+\cdots$. We cancel $\mathbb{P}(A_1)$ and get the following
+    \begin{align*}
+        0=\mathbb{P}(\emptyset)+\mathbb{P}(\emptyset)+\cdots+\mathbb{P}(\emptyset)+\cdots.
+    \end{align*}
+    Since the definition of probability enforce $\mathbb{P}(\emptyset)\ge0$, we have $\mathbb{P}(\emptyset)=0$.
+
+\item Let $A_1=E_1$, $A_2=E_2$, and $A_n=\emptyset$ for $n\ge 3$. Then, $\{A_n\}_{n=1}^\infty$ is a sequence of disjoint sets. We have
+\begin{align*}
+    E_1\cup E_2=A_1\cup A_2 \cup \emptyset \cup \emptyset \cup \cdots \cup \emptyset\cup \cdots=\bigcup_{n=1}^\infty A_n,
+\end{align*}
+which implies 
+\begin{align*}
+    \mathbb{P}(E_1\cup E_2) &=\mathbb{P}\left( \bigcup_{n=1}^\infty A_n \right) + \sum_{n=1}^\infty \mathbb{P}(A_n) \\
+    &= \mathbb{P}(E_1) + \mathbb{P}(E_2) + \mathbb{P}(\emptyset) + \mathbb{P}(\emptyset) +\cdots + \mathbb{P}(\emptyset)+ \cdots \\
+    &= \mathbb{P}(E_1) + \mathbb{P}(E_2).
+\end{align*}
+
+\item $B=A\cup (B-A)$. Since $A\cap (B-A)=\emptyset$, we have $\mathbb{P}(B)=\mathbb{P}(A)+\mathbb{P}(B-A)$. Because $\mathbb{P}(B-A)\ge0$, we have $\mathbb{P}(B)\ge\mathbb{P}(A)$.
+\end{enumerate}
+The proofs of other results are left for homework.
+
+\subsection{Indicator Functions}
+
+Let $A$ be a subset of $\mathbb{R}^d$. The \textbf{\href{https://en.wikipedia.org/wiki/Indicator_function}{indicator function}} $\mathbf{1}_A$ of $A$ is defined as
+\begin{align}\label{eq: definition of indicator functions}
+\mathbf{1}_A(x):=\left\{
+\begin{aligned}
+& 1\ \ \ \text{ if }x\in A,\\
+& 0\ \ \ \text{ otherwise.}
+\end{aligned}
+\right.
+\end{align}
+The function $\mathbf{1}_A(x)$ is sometimes represented as $\mathbf{1}(x\in A)$.
+
+\subsection{Cumulative Distribution Functions (CDFs)}
+
+\begin{definition}\label{def: CDF}
+Let $X$ be an $\mathbb{R}$-valued random variable defined on an underlying probability space $(\Omega,\mathbb{P})$. The function $F_X$ defined as follows 
+\begin{align}\label{eq: def of CDFs}
+    F_X(t):=\mathbb{P}\left(\{\omega\in\Omega: X(\omega)\le t\} \right)=\mathbb{P}\left(\{\omega\in\Omega: X(\omega)\in(-\infty, t]\}\right),\ \ \mbox{ for all }t\in\mathbb{R},
+\end{align}
+is called the \textbf{cumulative distribution function} (CDF) of $X$, which is denoted as $X\sim F_X$. ($F_X$ is sometimes briefly denoted by $F$.)
+\end{definition}
+\noindent\textbf{Remark:} $F_X(t)$ is defined for \textbf{all} real numbers $t\in\mathbb{R}$.
+
+
+\newpage
+\section{Problem Set}
+
+\begin{enumerate}
+    \item (2 points) Suppose $\Omega=\{1,2,\cdots,n\}$ is the sample space of interest, where $n<+\infty$ is a positive integer. For any subset (i.e., event) $A\subseteq \Omega$, we define 
+    \begin{align*}
+        \mathbb{P}(A):=\frac{\# A}{n}
+    \end{align*}
+    where $\# A$ denotes the number of elements in $A$. Please verify that the $\mathbb{P}$ defined above is a probability. 
+
+    \color{blue}
+    To be a probability, $\P$ must satisfy three axioms:
+    \begin{enumerate}
+        \item $\P(A) \geq 0 \quad A \subset \Omega$ 
+        
+        To see that this is true, observe that $A \subset \Omega$ so $0 \leq \# A \leq n$. Hence, 
+        \[\frac{0}{n} \leq \frac{\# A}{n} \leq \frac{n}{n}\]
+        By definition of $\P$, 
+        \[0 \leq \P(A) \leq 1\]
+        which is a stronger condition than $\P(A) \geq 0$
+
+        \item $\P(\Omega)$
+        By definition of $\P$, 
+        \[\P(\Omega) = \frac{\# \Omega}{n} = \frac{n}{n} = 1\]
+
+        \item For any sequence of disjoint subsets, $\P(\bigcup_{i=1}^\infty A_i) = \sum_{i=1}^\infty \P(A_i)$
+        
+        Let $A := \bigcup_{i=1}^m A_i$ be a sequence of $m$ disjoint events in $\Omega$. Then $\#A =$ so 
+        \[\P\left(\bigcup_{i=1}^m A_i\right) = \P(A) = \frac{\# A}{n} = \frac{m}{n}\]
+        But as $m$ is a positive integer, 
+        \[\frac{m}{n} = \sum_{i=1}^n \frac{1}{n}\]
+        Then as each $A_i$ is disjoint, $\P(A_i) = \frac{1}{n}$ so 
+        \[\frac{m}{n} = \sum_{i=1}^m \P(A_i) = \P\left(\bigcup_{i=1}^m A_i\right)\]
+        However, this does not depend on the finiteness of $m$ so 
+        \[\sum_{i=1}^\infty \P(A_i) = \P\left(\bigcup_{i=1}^\infty A_i\right)\]
+    \end{enumerate}
+    Then, as $\P$ satisfies all three requirements, it is a probability. $\blacksquare$
+    \color{black}
+    \pagebreak 
+
+    \item Please prove the results iv), v), and vi) of Theorem \ref{thm: properties directly follows from the def of prob spaces} (see the Review section), i.e.,
+    \begin{itemize}
+        \item (1 point) $0\le \mathbb{P}(A) \le 1$ for any subsets $A \subseteq \Omega$; 
+        
+            \color{blue}
+                As $(\P, \Omega)$ is a probability space, $\P(A) \geq 0$. But as $A \subseteq \Omega$, $\P(A) \leq \P(\Omega)$. Thus by the definition of a probability, 
+                \[0 \leq A \leq \P(\Omega) = 1 \implies 0 \leq A \leq 1 \quad \blacksquare\]
+            \color{black}
+
+        \item (1 point) for any $A,B\subseteq\Omega$, we have $\mathbb{P}(A\cup B)=\mathbb{P}(A)+\mathbb{P}(B)-\mathbb{P}(A\cap B)$;
+        
+        \color{blue}
+            For any $A, B \subseteq \Omega$, $A \cap (B \cap A^c) = \emptyset$ so from Property 2, 
+            \[\mathbb{P}(A \cup (B \cap A^c))=\mathbb{P}(A)+\mathbb{P}(B \cap A^c)\]
+            Additionally, 
+            \[(B \cap A^c) \cap (B \cap A) = \emptyset\]
+            and partition $\Omega$. Therefore, 
+            \[\P(B) = \P(B \cap A^c) + \P(B \cap A)\]
+            Rearranging, 
+            \[\P(B \cap A^c) = \P(B) - \P(B \cap A)\]
+            so together with the first equation,
+            \begin{align*}
+                \mathbb{P}(A \cup (B \cap A^c)) &= \mathbb{P}(A) + \P(B \cap A^c)\\
+                &= \P(A) + \P(B) - \P(B \cap A)\\
+            \end{align*}
+            
+            Finally, observe that 
+            \begin{align*}
+                A \cup (B\cap A^c) &= (A \cup B) \cap (A \cup A^c)\\
+                &= (A \cup B) \cap \Omega\\
+                &= A \cup B
+            \end{align*} 
+            so 
+            \[\mathbb{P}(A \cup (B \cap A^c)) = \P(A \cup B) = \P(A) + \P(B) - \P(B \cap A) \qed\]
+        \color{black}
+
+        \item (1 point) for any sequence of subsets $\{A_n\}_{n=1}^\infty$, we have $\mathbb{P}(\bigcup_{n=1}^\infty A_n)\le\sum_{n=1}^\infty\mathbb{P}(A_n)$.
+        
+        \color{blue}
+            In the case where $\{A_n\}_{n=1}^\infty$ is mutually disjoint, the equality follows trivially from Axiom 3. When the sequence is not mutually disjoint, we observe that 
+            \[\P(A_1 \cup A_2) \leq \P(A) + \P(A_2)\] 
+            because $\P(A \cap A_2)\geq 0$. 
+
+            Now to establish the inductive step, we see that 
+            \begin{align*}
+                \P(A_1 \cup A_2 \cup A_3) &= \P(A_1 \cup A_2) + \P(A_3) - \P((A_1 \cup A_2) \cap A_3)\\
+                &= \P(A_1) + \P(B_2) +\P(A_3) - \P(A_1 \cap A_2) - \P((A_1 \cup A_2) \cap A_3)
+            \end{align*} 
+            with $\P(A_1 \cap A_2) \geq 0$ and $\P((A_1 \cup A_2) \cap A_3) \geq 0$
+            so 
+            \[\P(A_2 \cup A_2 \cup A_3) \leq \P(A_1) + \P(A_2) + \P(A_3)\]
+            That is, for $n \geq 2$, 
+            \[\P\left(\bigcup_{i=1}^n A_i\right) = -\tilde P + \sum_{i=1}^n \P(A_i)\]
+            where $\tilde P \geq 0$ is the sequence of intersections of earlier $n$.
+            Thus,   
+            \[\P\left(\bigcup_{i=1}^\infty A_i\right) \leq \sum_{i=1}^\infty \P(A_i) \qed\]
+             
+        \color{red}
+    \end{itemize}
+    Since the results \textit{i)}, \textit{ii)}, and \textit{iii)} have been proved in the Review section, you can directly apply these results (i.e., results \textit{i)}, \textit{ii)}, and \textit{iii)}) in your proofs.
+
+    \pagebreak 
+
+    \item Suppose the sample space of interest is $\Omega=[0,1]=\{\text{all the real numbers that are $\ge0$ and $\le 1$}\}$. For any subset (i.e., event) $A\subseteq [0,1]=\Omega$, we define
+    \begin{align*}
+        \mathbb{P}(A)=\int_{0}^1 \mathbf{1}_A(x) \, dx,
+    \end{align*}
+    where $\mathbf{1}_A(x)$ is the indicator function of $A$ (see Eq.~\eqref{eq: definition of indicator functions}). The $\mathbb{P}$ defined above is a probability (you do not need to prove this fact). 
+    
+    Let $X$ be a random variable defined by
+    \begin{align*}
+        X(\omega)=\omega+1,
+    \end{align*}
+    for all $\omega\in\Omega=[0,1]$.
+
+    \begin{enumerate}
+        \item (1 point) Consider the event
+        \begin{align}\label{eq: event A}
+            A=\{\omega\in\Omega \,\vert\, X(\omega)=1.5\}.
+        \end{align}
+        Please calculate the probability of the event $A$ defined in Eq.~\eqref{eq: event A}, i.e., $\mathbb{P}(A)$.
+
+        \color{blue}
+            \[X = 1.5 \implies \omega = 0.5\]
+            \begin{align*}
+                \P(A) &= \int_0^1 \ind_A(x) \; dx\\
+                &= \int_0^{0.5} \ind_A(x) \; dx + \int_{0.5}^{0.5} \ind_A(x) \; dx + \int_{0.5}^1 \ind_A(x)\; dx\\
+                &= \int_0^{0.5} 0 \; dx + \int_{0.5}^{0.5} 1 \; dx + \int_{0.5}^1 0\; dx\\
+                &= 0 + 0 + 0 = \boxed{0}
+            \end{align*}
+        \color{black}
+
+        \item (0.5 points) Is the event $A$ defined in Eq.~\eqref{eq: event A} an impossible event?
+
+        \color{blue}
+            Despite the fact that $\P(A) = 0$, the event \boxed{\text{is not impossible}}. $X(\omega) = 1.5 = 0.5 + 1$ occurs when $\omega = 0.5 \in [0, 1]$ so the event can occur. 
+        \color{black}
+
+        \item (0.5 points) Consider the event
+        \begin{align}\label{eq: event B}
+            B=\{\omega\in\Omega \,\vert\, X(\omega)=0.5\}.
+        \end{align}
+        Please calculate the probability of the event $B$ defined in Eq.~\eqref{eq: event B}, i.e., $\mathbb{P}(B)$.
+        
+        \color{blue}
+            \[X = 0.5 \implies \omega = -0.5\]
+            But $-0.5 \not \in [0, 1]$ so 
+            \[\P(A) = \int_0^1 \ind_A(x)\; dx = \int_0^1 0 \; dx = \boxed{0}\]
+        \color{black}
+
+        \item (0.5 points) Is the event $B$ defined in Eq.~\eqref{eq: event B} an impossible event?
+        
+        \color{blue}
+            $\omega \not \in [0, 1] = \Omega$ so it is \boxed{\text{impossible}}.
+        \color{black}
+
+        \item (0.5 points) Please calculate the CDF of $X$.
+        
+        \color{blue}
+            \begin{align*}
+                F_X(x) &= \P(X \leq x) = \P(\omega + 1 \leq x) = \begin{cases}
+                    0 \quad x < 1\\
+                    1 \quad 1 \leq x \leq 2\\
+                    0 \quad x > 2
+                \end{cases}
+            \end{align*}
+        \color{black}
+    \end{enumerate}
+
+\pagebreak
+\item (2 points) Let $(\Omega, \mathbb{P})$ be a probability space and $X$ a random variable defined on $\Omega$. Please prove that the CDF $F_X(t)$ of $X$ is a non-decreasing function, i.e., $F_X(t_1)\le F_X(t_2)$ if $t_1\le t_2$.
+
+\color{blue}
+    By definition, 
+    \begin{align*}
+        F_X(t_1) = \P(X \leq t_1) = \P(X \in (-\infty, t_1])\\
+        F_X(t_2) = \P(X \leq t_2) = \P(X \in (-\infty, t_2])
+    \end{align*}
+    However, if $t_1 \leq t_2$, 
+    \begin{align*}
+        F_X(t_2) &= \P(X \in (-\infty, t_1] \cup (t_1, t_2])\\
+        &= \P(-\infty < X \leq t_1) + \P(t_1 < X \leq t_2)\\
+        &= F_X(t_1) + \P(t_1 < X \leq t_2)
+    \end{align*}
+    and by the fact that $\P(A) \geq 0 \quad A \in \Omega$, $\P(t_1 < X \leq t_2) \geq 0$ so 
+    \[F_X(t_2) - F_X(t_1) \geq 0\]
+    and
+    \[F_X(t_2) \geq F_X(t_1) \qed\]
+\color{black}
+\end{enumerate}
+
+\end{document}

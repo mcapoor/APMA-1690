@@ -1,0 +1,395 @@
+\documentclass[11pt,letterpaper, leqno]{article}
+\usepackage{latexsym}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\topmargin -0.25in
+\textheight 8.5in
+\oddsidemargin 0.0in
+\textwidth 6.5in
+
+\RequirePackage{amsthm,amsmath,amsfonts,amssymb}
+%\RequirePackage[numbers]{natbib}
+\RequirePackage[authoryear]{natbib}%% uncomment this for author-year citations
+\RequirePackage[colorlinks,citecolor=blue,urlcolor=blue]{hyperref}%% uncomment this for coloring bibliography citations and linked URLs
+\RequirePackage{graphicx}%% uncomment this for including figures
+
+\usepackage{comment}
+\usepackage{natbib}
+\usepackage{authblk}
+\usepackage[english]{babel}
+\bibliographystyle{abbrvnat}
+\setcitestyle{authoryear,open={(},close={)}}
+
+% For the algorithm table
+\usepackage{algorithm,algcompatible,amsmath}
+\DeclareMathOperator*{\argmax}{\arg\!\max}
+\DeclareMathOperator*{\argmin}{\arg\!\min}
+% https://tex.stackexchange.com/q/83169/5764
+\algnewcommand\INPUT{\item[\textbf{Input:}]}%
+\algnewcommand\OUTPUT{\item[\textbf{Output:}]}%
+%
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{acknowledgement}[theorem]{Acknowledgement}
+%\newtheorem{algorithm}[theorem]{Algorithm}
+\newtheorem{axiom}[theorem]{Axiom}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{remark}{Remark}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{conclusion}[theorem]{Conclusion}
+\newtheorem{condition}[theorem]{Condition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{corollary}{Corollary}
+\newtheorem{criterion}[theorem]{Criterion}
+\newtheorem{definition}{Definition}
+\newtheorem{example}{Example}
+\newtheorem{exercise}[theorem]{Exercise}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{lem}{Lemma}[section]
+\newtheorem{prop}{Proposition}[section]
+\newtheorem{defn}{Definition}[section]
+\newtheorem{ex}{Example}[section]
+\newtheorem{cor}{Corollary}[section]
+\newtheorem{rem}{Remark}[section]
+\newtheorem{rems}{Remarks}[section]
+\numberwithin{equation}{section} 
+\numberwithin{theorem}{section}
+\numberwithin{lemma}{section} 
+\numberwithin{corollary}{section}
+\numberwithin{definition}{section}
+\numberwithin{proposition}{section} 
+\numberwithin{remark}{section}
+\numberwithin{example}{section}
+\newtheorem{assumption}{Assumption}
+\DeclareMathOperator\supp{supp}
+
+%\newcommand{\ex}{{\bf\sf E}}            %% expectation
+\newcommand{\bfp}{{\bf P}}
+\newcommand{\bfr}{{\bf R}}
+\newcommand{\Var}{{\rm Var}}            %% 
+\newcommand{\Cov}{{\rm Cov}}            %% 
+\newcommand{\calc}{{\cal C}}            %%
+\newcommand{\cald}{{\cal D}} 
+\newcommand{\calf}{{\cal F}}            %%
+\newcommand{\call}{{\cal L}}            
+\newcommand{\al}{\alpha}                %%
+\newcommand{\bt}{\beta}                %%
+\newcommand{\ga}{\gamma}                %% abbreviated
+\newcommand{\dt}{\delta}                %% greek letters
+\newcommand{\la}{\lambda}               %%
+\newcommand{\ep}{\epsilon}              %%
+\newcommand{\sig}{\sigma}               %%
+\newcommand{\tri}{\triangle}
+\newcommand{\om}{\omega}                %%
+\newcommand{\ra}{\rightarrow}           %%
+\newcommand{\lra}{\longrightarrow}
+\newcommand{\Ra}{\Rightarrow}           %% arrows
+\newcommand{\subs}{\subseteq}           %% subset or equal to
+\newcommand{\eqdef}{\stackrel{\triangle}{=}}
+\newcommand{\hY}{\hat{Y}}
+\newcommand{\hp}{\hat{p}}
+\newcommand{\hX}{\hat{X}}
+\newcommand{\hy}{\hat{y}}
+\newcommand{\hQ}{\hat{Q}}
+\newcommand{\Zh}{\hat{Z}}
+\newcommand{\hla}{\hat{\lambda}}
+\newcommand{\starti}{\parindent0pt\it}  %% start an italic line
+\newcommand{\startb}{\parindent0pt\bf}  %% start a boldface line
+\newcommand{\tril}{\triangle^-}
+\newcommand{\trir}{\triangle^+}
+\newcommand{\trilr}{\triangle^{\pm}}
+\newcommand{\realR}{{{\rm I}\;\!\!\!{\rm R}}}
+\newcommand{\probP}{{{\rm I}\;\!\!\!{\rm P}}}
+\newcommand{\filtF}{{{\rm I}\;\!\!\!{\rm F}}}
+\newcommand{\expeE}{{{\rm I}\;\!\!\!{\rm E}}}
+\newcommand{\noin}{{\noindent}}
+\newcommand{\doty}{{\dot{y}}}
+\newcommand{\doth}{{\dot{h}}}
+\newcommand{\dotx}{{\dot{x}}}
+\newcommand{\dotu}{{\dot{u}}}
+\newcommand{\dotf}{{\dot{f}}}
+\newcommand{\dotg}{{\dot{g}}}
+\newcommand{\ddoty}{{\ddot{y}}}
+\newcommand{\ddoth}{{\ddot{h}}}
+\newcommand{\ddotx}{{\ddot{x}}}
+\newcommand{\ddotf}{{\ddot{f}}}
+%\newcommand{\Var}{{\mbox{Var}}}
+%\newcommand{\Cov}{{\mbox{Cov}}}
+\newcommand{\T}{\intercal}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Z}{\mathbb{Z}}
+
+\renewcommand{\P}{\mathbb{P}}
+\newcommand{\iid}{\overset{iid}{\sim}} 
+\newcommand{\Unif}{\text{Unif}\;}
+\newcommand{\mfX}{\mathfrak{X}}
+\renewcommand{\qed}{\quad \blacksquare}
+
+\begin{document}
+\begin{center}
+{\bf \Large APMA1690: ~~Homework \# 5 ~~~(Due by 11pm Oct 26)}
+\end{center}
+\[\]
+\medskip
+
+\begin{center}
+    ``\textit{A drunk man will eventually find his way home, but a drunk bird may get lost forever.}"
+\end{center}
+\begin{flushright}
+--- \href{https://en.wikipedia.org/wiki/Shizuo_Kakutani}{Shizuo Kakutani}
+\end{flushright}
+
+\section{Review}
+
+Please read the review section before delving into the problem set.
+
+\subsection{Notations}
+\begin{itemize}
+    \item $\mathbb{Z}$ = the collection of all integers.
+    \item $\mathbb{Z}^d= \underbrace{\mathbb{Z} \times \mathbb{Z} \times \cdots \times \mathbb{Z}}_{\mbox{\href{https://en.wikipedia.org/wiki/Cartesian_product}{Cartesian product}, $d$ times}}$.
+    \item For a Markov chain\footnote{All Markov chains utilized throughout this semester are assumed to be homogeneous Markov chains (HMCs). The ``homogeneous" will sometimes be suppressed for simplicity.} (MC) $\{X_n\}_{n=0}^\infty$, the subscript $n$ is conventionally referred to as ``time." All the components $X_n$ of the MC are random variables defined on an underlying probability space $(\Omega,\mathbb{P})$, i.e., $X_n: \Omega\rightarrow\mathcal{X}$.
+    \item Let $\boldsymbol{A}$ be a matrix. The \href{https://en.wikipedia.org/wiki/Transpose}{transpose} of $\boldsymbol{A}$ is denoted as $\boldsymbol{A}^\T$.
+\end{itemize}
+
+
+\subsection{Simple Random Walks}
+
+The following is the definition of the $d$-dimensional simple random walk (SRW), where $d\in\{1,2,3,\ldots\}$. 
+\begin{definition}
+Let $\xi_1,\xi_2,\ldots, \xi_n,\ldots$ be $\mathbb{Z}^d$-valued random variables, i.e.,
+\begin{align*}
+    \xi_i:\ \ &\Omega \rightarrow \mathbb{Z}^d,\\
+    &\omega \mapsto \xi_i(\omega),
+\end{align*}
+for all $i=1,2,\ldots.$ Suppose the random variables $\xi_1,\xi_2,\ldots, \xi_n,\ldots$ are iid and satisfy
+\begin{align}\label{eq: distribution of each drunk step}
+    \mathbb{P}(\xi_i=\boldsymbol{e}_k)=\mathbb{P}(\xi_i=-\boldsymbol{e}_k)=\frac{1}{2d}, \ \ \mbox{ for all }k=1,\ldots,d,
+\end{align}
+where $\boldsymbol{e}_k$ is the $k$-th axis of the $d$-dimensional space, i.e.,
+\begin{align*}
+    \begin{matrix}
+\boldsymbol{e}_k = &
+        &(0,\ldots,0,&1,&0,\ldots,0).\\
+        &&&\uparrow&    \\
+        &&&k^{th}&         \\
+\end{matrix}
+\end{align*}
+Particularly, when $d=1$, we have $e_1=1$ and $-e_1=-1$.
+
+We define the sequence $\{X_n\}_{n=0}^\infty$ of random variables taking values in $\mathbb{Z}^d$ as the following
+\begin{align*}
+    & X_0(\omega)=x_0\in\mathbb{Z}^d\ \ \ \mbox{for all }\omega\in\Omega,\\
+    & X_n(\omega)=x_0+\sum_{i=1}^n \xi_i(\omega),\ \ \mbox{ for all }n=1,2,\ldots,
+\end{align*}
+where $x_0\in\mathbb{Z}^d$ is a fixed point as an initialization. The sequence $\{X_n\}_{n=0}^\infty$ is called the $d$-dimensional \textbf{simple random walk}.
+\end{definition}
+Each random variable $\xi_i$ can be viewed as one step of the drunk man ($d=2$) or the drunk bird ($d=3$), and the initialization $x_0$ can be viewed as the ``home" of the man/bird. The cumulation of the steps is the walking/flying path of the man/bird. Since the man/bird is drunk, each step $\xi_i$ is totally random; thus, we have the ``drunk step distribution" in Eq.~\eqref{eq: distribution of each drunk step}.
+
+\subsection{Recurrence and Transience}
+
+Let $\{X_n\}_{n=0}^\infty$ be a homogeneous Markov chain taking values in the discrete state space $\mathcal{X}$, which can be either finite or infinite. For this Markov chain and each element $y\in\mathcal{X}$, we define the following random variable
+\begin{align*}
+    T_y(\omega) &\overset{\operatorname{def}}{=}\min\left\{\textcolor{red}{n>0}\, \,\vert\, X_n(\omega)=y\right\} \\
+    &= \mbox{ the time at which the sequence $\{X_n(\omega)\}_{n=\textcolor{red}{1}}^\infty$ first visits }y.
+\end{align*}
+Here, we explicitly write down $\omega$ to emphasize that $T_y$ is a random variable. We denote the following probability, which will be used to define ``recurrence/transience" and ``irreducibility."
+\begin{align*}
+    \rho_{xy}&\overset{\operatorname{def}}{=}\mathbb{P}(T_y<\infty \,\vert \, X_0=x) \\
+    & = \mbox{the conditional probability that MC will visit $y$ at least once, given that it starts from $x$.}
+\end{align*}
+With the notations $\{\rho_{xy}\}_{x,y\in\mathcal{X}}$, we can define reccurrence and transience as follows.
+\begin{definition}
+Suppose we have a homogeneous Markov chain $\{X_n\}_{n=0}^\infty$. We provide the following two versions of the same definition.
+\begin{enumerate}
+    \item (Rigorous/mathematical version) A state $y\in\mathcal{X}$ is said to be \textbf{recurrent} for this Markov chain if $\rho_{yy}=1$; otherwise (i.e., $\rho_{yy}<1$), the state $y$ is said to be \textbf{transient} for this Markov chain.
+    \item (Heuristic version) If the Markov chain starting from $y$ (i.e., $X_0=y$) will almost surely (i.e., with probability one) return to $y$, the state $y$ is said to be recurrent for this Markov chain; otherwise, $y$ is said to be transient.
+\end{enumerate}
+\end{definition}
+
+The following theorem gives an approach to identifying recurrence.
+\begin{theorem}\label{thm: optional, only for HW}
+        Let $\{X_n\}_{n=0}^\infty$ be a homogeneous Markov chain taking values in the discrete state space $\mathcal{X}$. For any $y\in\mathcal{X}$, we have the following 
+    \begin{enumerate}
+        \item The state $y$ is recurrent for the Markov chain if and only if
+    \begin{align*}
+        \sum_{n=1}^\infty \mathbb{P}(X_n=y \,\vert\, X_0=y) = \infty.
+    \end{align*}
+    \item If $y$ is not recurrent, we have the following for all $x\in\mathcal{X}$
+    \begin{align*}
+        \sum_{n=1}^\infty \mathbb{P}(X_n=y \,\vert\, X_0=x) < \infty.
+    \end{align*}
+    \end{enumerate}
+\end{theorem}
+\noindent The proof of Theorem \ref{thm: optional, only for HW} involves the so-called ``\href{https://en.wikipedia.org/wiki/Markov_property}{strong Markov property}," which is beyond the scope of this course. Hence, the proof of Theorem \ref{thm: optional, only for HW} is omitted to avoid a cheating proof.
+
+The following theorem shows that recurrence is ``contagious."
+\begin{theorem}\label{thm: recurrence is contagious}
+Let $\{X_n\}_{n=0}^\infty$ be a homogeneous Markov chain taking values in the discrete state space $\mathcal{X}$, which can be either finite or infinite. If $x$ is recurrent (i.e., $\rho_{xx}=1$) and $\rho_{xy}>0$, then we have
+\begin{enumerate}
+    \item $\rho_{yy}=1$, i.e., the state $y$ is recurrent;
+    \item $\rho_{xy}=\rho_{yx}=1$.
+\end{enumerate}
+That is, $\rho_{xx}=1$ and $\rho_{xy}>0$ implies $\rho_{xx}=\rho_{yy}=\rho_{xy}=\rho_{yx}=1$.
+\end{theorem}
+\noindent The proof of Theorem \ref{thm: recurrence is contagious} is given in my lecture notes (proof of Theorem 3.2.3 therein).
+
+
+
+\subsection{Irreducibility}
+
+\begin{definition}
+Let $\{X_n\}_{n=0}^\infty$ is a homogeneous Markov chain taking values in the discrete state space $\mathcal{X}$ and having transition probability $p$.
+\begin{enumerate}
+    \item The Markov chain $\{X_n\}_{n=0}^\infty$ or transition probability $p$ is said to be \textbf{recurrent} if all states of $\mathcal{X}$ are recurrent for this Markov chain.
+    \item The Markov chain $\{X_n\}_{n=0}^\infty$ or transition probability $p$ is said to be \textbf{irreducible} if $\rho_{xy}>0$ for all $x,y\in\mathcal{X}$, i.e., we have a positive probability of transiting between any two states.
+\end{enumerate}
+\end{definition}
+
+Because of the following theorem, the scenario where the state space $\mathcal{X}$ is finite is important in the Markov chain theory.
+\begin{theorem}\label{thm: a finite state chain must have a recurrent state}
+Let $\{X_n\}_{n=0}^\infty$ be a Markov chain taking values in the state space $\mathcal{X}$. If $\mathcal{X}$ is finite (i.e., $\#\mathcal{X}<\infty$), we have
+\begin{enumerate}
+    \item $\mathcal{X}$ has at least one state that is recurrent for $\{X_n\}_{n=0}^\infty$;
+    \item furthermore, if $\{X_n\}_{n=0}^\infty$ is irreducible, $\{X_n\}_{n=0}^\infty$ is recurrent, i.e., all states in $\mathcal{X}$ are recurrent for $\{X_n\}_{n=0}^\infty$.
+\end{enumerate}
+\end{theorem}
+
+
+\subsection{Transition Matrices}
+
+Let $\{X_n\}_{n=0}^\infty$ be a homogeneous Markov chain taking values in $\mathcal{X}=\{x_1,x_2,\ldots, x_S\}$ and having the transition probability $p$. We define the following \textbf{transition matrix} of the Markov chain
+\begin{align}\label{eq: transition matrix}
+    \boldsymbol{P}=
+    \begin{pmatrix}
+    p(x_1, x_1) & p(x_1, x_2) & \cdots & p(x_1, x_S) \\
+    p(x_2, x_1) & p(x_2, x_2) & \cdots & p(x_2, x_S) \\
+    \vdots & \vdots & \ddots & \vdots \\
+    p(x_S, x_1) & p(x_S, x_2) & \cdots & p(x_S, x_S)
+    \end{pmatrix},
+\end{align}
+which is an $S\times S$ matrix.
+
+\newpage
+
+\section{Problem Set}
+
+\begin{enumerate}
+    \item Prove that the 1-dimensional simple random walk is not only a Markov chain but also a homogeneous Markov chain. Please derive the transition probability of the 1-dimensional simple random walk.
+
+        \color{blue}
+            The 1-dimensional simple random walk is defined by 
+            \[X_n(\omega) = \begin{cases}
+                x_0 \qquad \qquad \qquad \qquad \! n =0 \\
+                x_0 + \sum_{i=1}^n \xi_i(\omega) \qquad n = 1, 2, \dots
+            \end{cases}\] 
+            where 
+            \[\xi_1, \xi_2, \dots,\; \xi_n \overset{iid}{\sim} \Unif(\{-1, 1\}) \implies \P(\xi_i = 1) = \P(\xi_i = -1) = \frac{1}{2}\]
+
+            Observe:
+            \begin{align*}
+                X_{n-1}(\omega) &= x_0 + \sum_{i=1}^{n-1} \xi_i(\omega)\\
+                X_n(\omega) &= x_0 + \sum_{i=1}^n \xi_{i}(\omega) = X_{n-1}(\omega) + \xi_n(\omega) 
+            \end{align*}
+            Then for two particular states $x, y \in \mfX$, we can say 
+            \[\P(X_n = y \; | \; X_{n-1} = x) = \P(\xi_n = y - x)\]
+            But since $\xi_i$ are drawn iid, the probability does not depend on $n$ -- just on $x$ and $y$: 
+            \[\P(\xi_n = y - x) = \P(y - x = 1 \; | \; y -x \in \{-1, 1\}) = \P(y - x = -1 \; | \; y - x \in \{-1, 1\}) = \frac{1}{2}\]
+            Heuristically, this makes sense: by the recursive formula above, the Markov chain changes by $\pm 1$ every time step with equal probability. So the outcome of being in a particular state one time step after being in an earlier state represents half of the state space. 
+
+            And in fact, the above calculation is exactly the way to calculate the transition probability:
+            \[p(x, y) = \P(X_n = y \; | \; X_{n-1} = x) = \frac{1}{2}\]
+            Since this function does not depend on $n$, the MC is homogenenous. $\qed$
+
+        \color{black}
+
+    \pagebreak
+
+    \item Prove that the point $0\in\mathbb{Z}$ is recurrent for the 1-dimensional simple random walk.
+
+    You may consider applying the following results: (You do not need to prove any of the following results.)
+    \begin{itemize}
+        \item Theorem \ref{thm: optional, only for HW}.
+        \item Let $\{a_n\}_{n=1}^\infty$ and $\{b_n\}_{n=1}^\infty$ be two sequences of nonnegative numbers. Suppose $\lim_{n\rightarrow\infty}(a_n/b_n)=1$. Then, we have $\sum_{n=1}^\infty a_n<\infty$ if and only if $\sum_{n=1}^\infty b_n<\infty$.
+        \item (\href{https://en.wikipedia.org/wiki/Stirlings_approximation}{Stirling's formula}).
+        \begin{align*}
+            \lim_{n\rightarrow\infty}\frac{n!}{n^n\cdot e^{-n}\cdot\sqrt{2\pi n}} = 1.
+        \end{align*}
+    \end{itemize}
+
+        \color{blue}
+            By Theorem 1.1 the state $0 \in \Z$ is recurrent for the 1-d simple random walk if and only if 
+            \[\sum_{n=1}^\infty \P(X_n = 0 \; | \; X_0 = 0) = \infty\]
+
+            By the definition of this 1-d SRW
+            \[X_n(\omega) = \sum_{i=1}^n \xi_i(\omega)\]
+            with $\xi_i(\omega) \iid \Unif(\{-1, 1\})$. So 
+            \[\P(X_n = 0) = \P\left(\sum_{i=1}^n \xi_i(\omega) = 0\right) \]
+           
+            So when does $\sum_{i=1}^n \xi_i(\omega) = 0$? Clearly, it must be after an even number of steps. So, we need to calculate the probability that out of the $2n$ steps of the chain, exactly $n$ of them are in one particular direction (WLOG say $\xi = 1$). Thus, 
+            \[\P\left(\sum_{i=1}^n \xi_i(\omega) = 0\right) = \frac{1}{2^{2n}} \begin{pmatrix}
+                2n\\n
+            \end{pmatrix} = \frac{1}{2^{2n}} \cdot \frac{(2n)!}{n! (2n-n)!} = \frac{1}{2^{2n}} \cdot \frac{(2n)!}{n! \cdot n!}\]
+
+            By Sterling's formula, 
+            \[\frac{1}{2^{2n}} \cdot \frac{(2n)!}{n! \cdot n!} \approx \frac{1}{2^{2n}} \cdot \frac{(2n)^{2n} e^{-2n} \sqrt{4\pi n}}{[n^n e^{-n}\sqrt{2\pi n}]^2} \approx \frac{1}{\sqrt{\pi n}}\]
+            (for large $n$). 
+
+            So to review, we have shown that 
+            \[\P(X_n = 0 \; | \; X_0 =0) = \P\left(\sum_{i=1}^n \xi_i(\omega) = 0\right) = \frac{1}{\sqrt{\pi n}} \]
+
+            So 
+            \[\sum_{n=1}^\infty \P(X_n = 0 \; | \; X_0 = 0) = \sum_{n=1}^\infty \frac{1}{\sqrt{\pi n}}\]
+
+            But by the integral convergence test, 
+            \[\int_1^{\infty} \frac{1}{\sqrt{\pi n}} \; dn= \frac{1}{\sqrt \pi} \int_1^{\infty} n^{-\frac{1}{2}} \; dn = \frac{1}{\sqrt \pi} [2\sqrt n]_1^\infty = \infty\]
+            So the sum is $\infty$. Thus by Theorem 1.1, $0 \in \Z$ is recurrent.$\qed$
+        \color{black}
+        
+    \pagebreak
+
+    \item (1 point) Let $\{X_n\}_{n=0}^\infty$ be a homogeneous Markov chain taking values in the state space $\mathcal{X}=\{x_1, x_2,\ldots, x_S\}$ and having transition probability $p$. %Suppose $\pi$ is a stationary distribution of the Markov chain.
+    \begin{itemize}
+        \item Let $\boldsymbol{P}$ denote the transition matrix of the Markov chain (see Eq.~\eqref{eq: transition matrix}).
+        \item $\pi: \mathcal{X}\rightarrow[0,1]$ is a probability mass function. Denote the column vector $(\pi(x_1), \pi(x_2),\ldots, \pi(x_S))^\T$ as $\boldsymbol{\pi}$.
+    \end{itemize}
+    Prove that the matrix equation $\boldsymbol{\pi}=\boldsymbol{P}^\T \boldsymbol{\pi}$ is equivalent to the following
+    \begin{align*}
+        \pi(x)=\sum_{y\in\mathcal{X}}\pi(y)\cdot p(y,x),\ \ \mbox{ for all }x\in\mathcal{X}.
+    \end{align*}
+
+        \color{blue}
+            \begin{align*}
+                \vec \pi &= P^T \vec \pi\\
+                &= \begin{pmatrix}
+                    p(x_1, x_1) & p(x_2, x_1) & \cdots & p(x_S, x_1) \\
+                    p(x_1, x_2) & p(x_2, x_2) & \cdots & p(x_S, x_2) \\
+                    \vdots & \vdots & \ddots & \vdots \\
+                    p(x_1, x_S) & p(x_2, x_S) & \cdots & p(x_S, x_S)
+                \end{pmatrix} \begin{pmatrix}
+                    \pi(x_1)\\
+                    \pi(x_2)\\
+                    \vdots\\
+                    \pi(x_S)
+                \end{pmatrix}\\
+                &= \begin{pmatrix}
+                    \sum_{i=1}^S p(x_i, x_1) \cdot \pi(x_1)\\
+                    \sum_{i=1}^S p(x_i, x_2) \cdot \pi(x_2)\\
+                    \vdots\\
+                    \sum_{i=1}^S p(x_i, x_S) \cdot \pi(x_S)
+                \end{pmatrix}
+            \end{align*}
+
+            Then since $\mfX = \{x_1, x_2, \dots, X_S\}$, 
+            \[\vec \pi_i = \pi(x_i) = \sum_{j=1}^S p(x_i, x_j) \cdot \pi(x_i) = \sum_{y \in \mfX} \pi(y) \cdot p(y, x_i)\]
+            So $\forall x \in \mfX$, 
+            \[\pi(x) = \sum_{y \in \mfX} \pi(y) \cdot p(y, x) \qed\]
+        \color{black}
+\end{enumerate}
+
+
+\end{document}
